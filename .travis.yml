@@ -22,6 +22,7 @@ install:
   - bash kcov-install.sh
 
 script:
+  - make build
   - make cover
 
 after_success:
