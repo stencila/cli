@@ -1,1 +1,6 @@
 coverage
+
+# Generated files
+tests/**/Dockerfile
+tests/**/r-requires.R
+tests/**/node-requires.txt
