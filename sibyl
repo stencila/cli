@@ -217,7 +217,7 @@ function build {
 
   docker build --tag "${name}:latest" .
 
-  result $name
+  echo $name
 }
 
 # Make a container image for a directory
