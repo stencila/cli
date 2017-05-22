@@ -1,4 +1,4 @@
-FROM alpha-base
+FROM stencila/alpha-base
 
 # Install R and any other libraries required by R packages
 RUN apt-get update \
