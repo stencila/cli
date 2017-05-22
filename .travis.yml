@@ -1,0 +1,28 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      # Required by sibyl
+      - jq
+      # Required by kcov
+      - binutils-dev
+      - libcurl4-openssl-dev
+      - zlib1g-dev
+      - libdw-dev
+      - libiberty-dev
+      - cmake
+
+install:
+  - bash kcov-install.sh
+
+script:
+  - make cover
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
