@@ -2,6 +2,8 @@
 
 # Assign colors if stdout is a terminal supporting colors
 if test -t 1; then
+  # Exclude from coverage
+  # LCOV_EXCL_START
   ncolors=$(tput colors)
   if test -n "$ncolors" && test $ncolors -ge 8; then
     bold="$(tput bold)"
@@ -17,6 +19,7 @@ if test -t 1; then
     cyan="$(tput setaf 6)"
     white="$(tput setaf 7)"
   fi
+  # LCOV_EXCL_STOP
 fi
 
 function info {
@@ -28,17 +31,8 @@ function error {
   exit 1
 }
 
-function result {
-  echo $1
-}
 
-# Make a container image
-function make {
-  compile
-  return build
-}
-
-# Build a container image from the files present in the
+# Compile a Dockerfile based on the files present in the
 # directory
 function compile {
 
@@ -86,7 +80,6 @@ function compile {
 
   fi
 }
-
 
 # Install Node.js and packages
 function install_node {
@@ -178,7 +171,6 @@ EOL
 
 }
 
-
 # Install R and packages
 function install_r {
 
@@ -216,8 +208,7 @@ EOL
 
 }
 
-# Build a container image from the files present in the
-# directory
+# Build a container image from a Dockerfile
 function build {
   info 'Building Docker image'
 
@@ -229,25 +220,26 @@ function build {
   result $name
 }
 
+# Make a container image for a directory
+function make {
+  compile
+  return build
+}
 
-# Positional arguments
-task=$1
-
-if [ "$task" == "" ]; then
-  echo "${red}USAGE${normal} sibyl <compile|build>"
+# Main entry point
+# Exclude from coverage
+# LCOV_EXCL_START
+if [ "$1" == "" ]; then
+  echo "${red}USAGE${normal} sibyl <compile|build|make>"
 else
-  case $task in
-    compile)
-      compile
-      ;;
-    build)
-      build
-      ;;
-    sourced)
-      # Just to allow test files to source this silently
-      ;;
+  case $1 in
+    compile) compile ;;
+    build) build ;;
+    make) make ;;
+    sourced) ;; # Just to allow test files to source this silently
     *)
-      error "Unknown task: ${task}"
+      error "Unknown task: ${1}"
       ;;
   esac
 fi
+# LCOV_EXCL_STOP
