@@ -223,7 +223,7 @@ function build {
 # Make a container image for a directory
 function make {
   compile
-  return build
+  build
 }
 
 # Main entry point
