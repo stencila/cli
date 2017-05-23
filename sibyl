@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+###############################################################################
+#
+# 0. Utilties
+# 
+# Utility functions and variables used below
+# 
+###############################################################################
+
 # Assign colors if stdout is a terminal supporting colors
 if test -t 1; then
   # Exclude from coverage
@@ -22,15 +30,49 @@ if test -t 1; then
   # LCOV_EXCL_STOP
 fi
 
+# Indent lines
+function indent {
+  sed 's/^/    /'
+}
+
+# Print a STEP to terminal
+function step {
+  echo -e "${green}STEP${normal} $1 $2"
+}
+
+# Print some INFO to terminal
 function info {
   echo -e "${blue}INFO${normal} $1"
 }
 
+# Print an ERROR to terminal
 function error {
   echo -e "${red}ERROR${normal} $1"
   exit 1
 }
 
+
+###############################################################################
+#
+# 1. Fetch
+# 
+# Fetch a folder from somewhere. "Somewhere" could be a subdir in a Github repo, 
+# a local filesystem directory, a zip file, ...
+# 
+###############################################################################
+
+function fetch {
+  step 1 'Fetch'
+}
+
+
+###############################################################################
+#
+# 2. Build
+# 
+# Build an environment for the folder
+# 
+###############################################################################
 
 # Compile a Dockerfile
 function compile {
@@ -244,33 +286,85 @@ function name {
 
 # Build a container image
 function build {
+  step '2' 'Build'
+
   compile
 
   info 'Building Docker image'
-  docker build --tag $(name) .
+  docker build --tag $(name) . | indent
 }
 
-# Reflect a container image
+
+###############################################################################
+#
+# 3. Check
+# 
+# Check the container
+# 
+###############################################################################
+
+# Check a container image
 # 
 # Gets the `reflection.json` file generated at build time
 # from within the container
-function reflect {
+function check {
+  step 3 'Check'
+
   docker run $(name) cat reflection.json > reflection.json
 }
 
 
+###############################################################################
+#
+# 4. Start
+# 
+# Start the document
+# 
+###############################################################################
+
+function start {
+  step 4 'Start'
+}
+
+
+###############################################################################
+#
 # Main entry point
+# 
+###############################################################################
+
 # Exclude from coverage
 # LCOV_EXCL_START
 if [ "$1" == "" ]; then
-  echo "${red}USAGE${normal} sibyl <compile|build|make>"
+  echo "${red}USAGE${normal} sibyl <task>"
 else
   case $1 in
-    compile) compile ;;
-    name) name ;;
+    sourced) ;; # Just to allow test file to source this silently
+
+    # Tasks that can be useful during development
+
+    name) name ;;  # e.g. `docker run -it $(sibyl name)`
+
+    # Steps can be run individually...
+
+    fetch) fetch $2 ;;
+
     build) build ;;
-    reflect) reflect ;;
-    sourced) ;; # Just to allow test files to source this silently
+      compile) compile ;;
+    
+    check) check ;;
+  
+    start) start ;;
+
+    # but `launch` runs all steps.
+
+    launch)
+      fetch $2
+      build
+      check
+      start
+      ;;
+      
     *)
       error "Unknown task: ${1}"
       ;;

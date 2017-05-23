@@ -21,10 +21,6 @@ function fail {
   fails=$(($fails + 1))
 }
 
-function indent {
-  sed 's/^/    /'
-}
-
 # Assertion functions
 
 function assert_no_diff {
