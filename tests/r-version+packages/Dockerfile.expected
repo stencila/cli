@@ -9,3 +9,6 @@ RUN add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux
  && rm -rf /var/lib/apt/lists
 COPY r-requires.R r-requires.R
 RUN Rscript r-requires.R
+COPY image.json image.json
+COPY reflect.sh reflect.sh
+RUN bash reflect.sh > reflection.json

@@ -9,3 +9,6 @@ RUN add-apt-repository ppa:fkrull/deadsnakes \
 COPY requirements.txt requirements.txt
 RUN pip3 install --upgrade pip \
  && pip3 install -r requirements.txt
+COPY image.json image.json
+COPY reflect.sh reflect.sh
+RUN bash reflect.sh > reflection.json

@@ -45,7 +45,7 @@ do
   test_ $(basename $dir)
   cd $dir
   
-  make
+  compile
   for file in $(ls -1 *.expected); do
     assert_no_diff "${file%.*}" "$file"
   done

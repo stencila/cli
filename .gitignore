@@ -2,5 +2,8 @@ coverage
 
 # Generated files
 tests/**/Dockerfile
-tests/**/r-requires.R
+tests/**/image.json
 tests/**/node-requires.txt
+tests/**/r-requires.R
+tests/**/reflect.sh
+tests/**/reflection.json
