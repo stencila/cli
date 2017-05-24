@@ -45,9 +45,9 @@ function info {
   echo -e "${blue}INFO${normal} $1"
 }
 
-# Print an ERROR to terminal
+# Print an ERROR to stderr and exit
 function error {
-  echo -e "${red}ERROR${normal} $1"
+  echo -e "${red}ERROR${normal} $1" 1>&2
   exit 1
 }
 
@@ -426,7 +426,7 @@ function start {
 # Exclude from coverage
 # LCOV_EXCL_START
 if [ "$1" == "" ]; then
-  echo "${red}USAGE${normal} sibyl <task>"
+  error "No task supplied. Usage: sibyl <task> [<option>, ...]"
 else
   case $1 in
     sourced) ;; # Just to allow test file to source this silently
