@@ -52,17 +52,94 @@ function error {
 }
 
 
+# Get a property of a stencil
+function property {
+  jq -r ".$1" stencil.json 2> /dev/null
+}
+
+# Get the name of a stencil
+function name {
+  # property name
+  jq -r ".$1" image.json
+}
+
+
 ###############################################################################
 #
 # 1. Fetch
 # 
-# Fetch a folder from somewhere. "Somewhere" could be a subdir in a Github repo, 
-# a local filesystem directory, a zip file, ...
+# Fetch a folder from an address:
+# 
+# - `file://parent/folder` : a folder on the local filesystem
+# 
+# - `file://path/archive(.zip|tar.gz)/folder` : a folder within a file 
+#    archive on the local filesystem 
+# 
+# - `github://user/repo/parent/folder` :  a folder in a Github repo
 # 
 ###############################################################################
 
 function fetch {
   step 1 'Fetch'
+
+  if [ "$1" == "" ]; then
+    error "Nothing to fetch: usage \`${yellow}sybil fetch some-address-to-fetch${normal}\`"
+  fi
+
+  read scheme path <<< $(echo "$1" | sed -r "s/^(file|github):\/\/(.+)/\1 \2/")
+  info "Fetching using scheme '${cyan}$scheme${normal}' with path '${cyan}$path${normal}'"
+
+  case $scheme in
+    file)   fetch_file $path ;;
+    github) fetch_github $path ;;      
+    *)      error "Unknown scheme: $scheme" ;;
+  esac
+}
+
+function fetch_file {
+  fetch_file_archive $1 $2
+}
+
+function fetch_file_archive {
+  path=$1 # Address path i.e. path/archive.tar.gz/folder
+
+  read archive folder <<< $(echo "$path" | sed -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")
+  info "Fetching file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
+
+  # Check the folder exists in the archive
+  lines=$(tar -tf "$archive" "$folder" 2> /dev/null | wc -l)
+  if [ "$lines" == "0" ]; then
+    error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
+  fi
+  
+  # Determine the depth of folder by slloking for forward slashes followed by a name
+  if [ "$folder" != "" ]; then
+    depth=$(grep -o "/\w\w*" <<< "$folder" | wc -l)
+    depth=$((depth+1))
+  else
+    depth=0
+  fi
+
+  # Extract it
+  temp_folder=$(mktemp --directory)
+  tar --strip-components=$depth -xzf $archive $folder
+}
+
+function fetch_github {
+  path=$1 # Address path i.e. repo/user/folder
+
+  read user repo folder <<< $(echo "$path" | sed -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")
+  info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
+
+  # Dowload the archive
+  archive=$(mktemp --dry-run --suffix '.tar.gz')
+  wget -O "$archive" "https://github.com/$user/$repo/tarball/master"
+
+  # Get the name of the root directory and strip off the trailing slash
+  root=$(tar --exclude='*/*' -tf "$archive")
+
+  # Fetch from the file archive
+  fetch_file_archive $archive/$root$folder
 }
 
 
@@ -279,11 +356,6 @@ EOL
 
 }
 
-# Get the name of a container image
-function name {
-  jq -r .name image.json
-}
-
 # Build a container image
 function build {
   step '2' 'Build'
@@ -343,6 +415,7 @@ else
 
     # Tasks that can be useful during development
 
+    property) property $2 ;; # e.g. `sibyl property origin`
     name) name ;;  # e.g. `docker run -it $(sibyl name)`
 
     # Steps can be run individually...

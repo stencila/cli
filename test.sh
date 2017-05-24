@@ -40,9 +40,14 @@ for dir in tests/*/
 do
   test_ $(basename $dir)
   cd $dir
+
+  origin=$(property origin)
+  if [ "$origin" != "" ]; then
+    fetch $origin
+  fi
   
   compile
-  for file in $(ls -1 *.expected); do
+  for file in $(ls -1 | grep ".expected"); do
     assert_no_diff "${file%.*}" "$file"
   done
 
