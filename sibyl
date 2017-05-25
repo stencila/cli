@@ -134,15 +134,30 @@ function fetch {
   esac
 }
 
+# Fetch from the local filesystem
 function fetch_file {
-  fetch_file_archive $1
+  local path=$1
+  info "Fetching from filesystem '$cyan$path$normal'"
+  if [ ! -e "$path" ]; then
+    error "Path '$cyan$path$normal' does not exist"
+  elif [ -d "$path" ]; then
+    fetch_file_directory $path
+  else
+    fetch_file_archive $path
+  fi
+}
+
+function fetch_file_directory {
+  local path=$1 # Filesystem path i.e. ./parent/folder
+  info "Fetching from directory '$cyan$path$normal'"
+  cp -R "$path/." "."
 }
 
 function fetch_file_archive {
   path=$1 # Address path i.e. path/archive.tar.gz/folder
 
   read archive folder <<< $(echo "$path" | sed -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")
-  info "Fetching file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
+  info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
   # Check the folder exists in the archive
   lines=$(tar -tf "$archive" "$folder" 2> /dev/null | wc -l)
@@ -150,7 +165,7 @@ function fetch_file_archive {
     error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
   fi
   
-  # Determine the depth of folder by slloking for forward slashes followed by a name
+  # Determine the depth of folder by counting forward slashes followed by a name
   if [ "$folder" != "" ]; then
     depth=$(grep -o "/\w\w*" <<< "$folder" | wc -l)
     depth=$((depth+1))
@@ -441,16 +456,16 @@ function start {
 
   # Find a port for container to publish to localhost
   local port_used="maybe"
-  while [ $port_used != "" ]; do
+  while [ "$port_used" != "" ]; do
       port=$(( ( RANDOM % 60000 )  + 1025 ))
       port_used=$(netstat --listening --all --tcp --numeric | grep ":$port")
   done
 
-  info "Starting container on port $port"
+  info "Starting container on port $cyan$port$normal"
+  id=$(docker run --publish $port:2000 --detach $(property name) stencila-node)
+  info "Container $cyan$id$normal started"
 
-  docker run --publish $port:2000 --detach $(property name) stencila-node
-
-  echo -e "${green}PORT${normal} $port"
+  echo -e "${green}GOTO${normal} $port"
 }
 
 
