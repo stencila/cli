@@ -1,0 +1,30 @@
+{
+  "name": "stencila-sibyl",
+  "version": "1.0.0",
+  "description": "Stencila in containers",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "standard",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stencila/sibyl.git"
+  },
+  "author": "https://github.com/stencila/sibyl/graphs/contributors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/stencila/sibyl/issues"
+  },
+  "homepage": "https://github.com/stencila/sibyl#readme",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-router": "^7.2.0",
+    "koa-send": "^4.1.0"
+  },
+  "devDependencies": {
+    "standard": "*"
+  }
+}
