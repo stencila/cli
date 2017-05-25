@@ -405,7 +405,7 @@ function build {
   compile
 
   info 'Building Docker image'
-  docker build --tag $(property slug) . | indent
+  docker build --tag $(property name) . | indent
 }
 
 
@@ -424,7 +424,7 @@ function build {
 function check {
   step 3 'Check'
 
-  docker run $(property slug) cat reflection.json > reflection.json
+  docker run $(property name) cat reflection.json > reflection.json
 }
 
 
@@ -439,8 +439,18 @@ function check {
 function start {
   step 4 'Start'
 
-  info 'Reproducing the document'
-  echo 'OK, so this isnt doing anything yet. But in the future it will show the reproduced document' > stencila.html
+  # Find a port for container to publish to localhost
+  local port_used="maybe"
+  while [ $port_used != "" ]; do
+      port=$(( ( RANDOM % 60000 )  + 1025 ))
+      port_used=$(netstat --listening --all --tcp --numeric | grep ":$port")
+  done
+
+  info "Starting container on port $port"
+
+  docker run --publish $port:2000 --detach $(property name) stencila-node
+
+  echo -e "${green}PORT${normal} $port"
 }
 
 
