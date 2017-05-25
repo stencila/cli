@@ -23,3 +23,14 @@ RUN apt-get update \
     software-properties-common \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/
+
+# Install node
+RUN curl -sL "https://deb.nodesource.com/setup_7.x" | bash \
+ && apt-get install -y nodejs \
+ && npm install --global stencila-node
+
+# Add a user (creating home and specifying shell) and
+# setup working environment
+RUN useradd --create-home --shell /bin/bash guest
+USER guest
+WORKDIR /home/guest
