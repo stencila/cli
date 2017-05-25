@@ -57,11 +57,34 @@ function property {
     # If stencila.json is missing, or property is missing, return 'null'
     jq -r ".$1" stencila.json 2> /dev/null || echo 'null'
   else
+    if [ ! -f stencila.json ]; then
+      echo "{}" > stencila.json
+    fi
     # Inplace editing is not possible with jq so use a temp file
     # See https://github.com/stedolan/jq/wiki/FAQ#general-questions
     cat stencila.json <(echo "{\"$1\": $2}") | jq --slurp add > temp.json && mv temp.json stencila.json
   fi
 }
+
+###############################################################################
+#
+# 0. Initialize
+# 
+###############################################################################
+
+function init {
+  step 0 'Initialize'
+
+  address="$1"
+  name=$(echo "$1" | tr ":/" "-")
+  folder="folders/$name"
+  info "Initializing folder $cyan$folder$normal for address $cyan$address$normal"
+
+  mkdir -p "$folder"
+  pushd "$folder" > /dev/null
+  property name "\"$name\""
+}
+
 
 ###############################################################################
 #
@@ -93,7 +116,8 @@ function fetch {
     fi
   else
     if [ "$origin" == "null" ]; then
-      set origin "$address"
+      origin="$address"
+      property origin "\"$address\""
     fi
     if [ "$address" != "$origin" ]; then
       error "Attempting to fetch address \`${cyan}$address${normal}\` when origin is already \`${cyan}$origin${normal}\`"
@@ -381,7 +405,7 @@ function build {
   compile
 
   info 'Building Docker image'
-  docker build --tag $(name) . | indent
+  docker build --tag $(property slug) . | indent
 }
 
 
@@ -400,7 +424,7 @@ function build {
 function check {
   step 3 'Check'
 
-  docker run $(name) cat reflection.json > reflection.json
+  docker run $(property slug) cat reflection.json > reflection.json
 }
 
 
@@ -438,6 +462,8 @@ else
 
     # Steps can be run individually...
 
+    init) init $2 ;;
+
     fetch) fetch $2 ;;
 
     build) build ;;
@@ -450,6 +476,7 @@ else
     # but `launch` runs all steps.
 
     launch)
+      init $2
       fetch $2
       build
       check
