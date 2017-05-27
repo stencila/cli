@@ -48,12 +48,15 @@ do
   test_ "$(basename "$dir")"
   cd "$dir"
 
+  # If `origin` is defined then `fetch`
   origin=$(property origin)
-  if [ "$origin" != "" ]; then
+  if [ "$origin" != "null" ]; then
     fetch "$origin"
   fi
-  
+  # Compile
   compile
+
+  # Test files are as expected
   for file in *.expected; do
     assert_no_diff "${file%.*}" "$file"
   done

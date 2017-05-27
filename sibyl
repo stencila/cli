@@ -54,12 +54,16 @@ function error {
 # Get or set a property from stencila.json
 function property {
   if [ -z "$2" ]; then
+    # Get (second arg not given)
     # If stencila.json is missing, or property is missing, return 'null'
     jq -r ".$1" stencila.json 2> /dev/null || echo 'null'
   else
     if [ ! -f stencila.json ]; then
       echo "{}" > stencila.json
     fi
+    # Set (second arg given)
+    # Ensure `stencila.json` exists
+    test ! -e "stencila.json" && touch stencila.json
     # Inplace editing is not possible with jq so use a temp file
     # See https://github.com/stedolan/jq/wiki/FAQ#general-questions
     cat stencila.json <(echo "{\"$1\": $2}") | jq --slurp add > temp.json && mv temp.json stencila.json

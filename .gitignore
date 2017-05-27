@@ -1,10 +1,10 @@
 coverage
 node_modules
 
-# Generated files
-tests/**/Dockerfile
-tests/**/image.json
-tests/**/node-requires.txt
-tests/**/r-requires.R
-tests/**/reflect.sh
-tests/**/reflection.json
+# Ignore folders created by `init`
+folders
+
+# Ignore files generated in tests but not
+# expected files
+tests/**/*
+!tests/**/*.expected
