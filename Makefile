@@ -2,11 +2,15 @@ all: setup build cover
 
 setup:
 	bash kcov-install.sh
+	sudo apt-get install shellcheck
 
 build:
 	docker build images/alpha-base --tag stencila/alpha-base
 
-test:
+lint:
+	shellcheck sibyl
+
+test: lint
 	bash test.sh
 
 cover:

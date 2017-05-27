@@ -10,6 +10,8 @@ addons:
     packages:
       # Required by sibyl
       - jq
+      # ShellCheck linter
+      - shellcheck
       # Required by kcov
       - binutils-dev
       - libcurl4-openssl-dev
