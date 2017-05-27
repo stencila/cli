@@ -51,6 +51,23 @@ function error {
   exit 1
 }
 
+# Mock time consuming processes.
+# Used during development and testing
+function mock {
+  function wget {
+    echo "Mocking 'wget $*'"
+  }
+  function docker {
+    echo "Mocking 'docker $*'"
+  }
+}
+
+# Unset mocking functions
+function unmock {
+  unset wget
+  unset docker
+}
+
 # Get or set a property from stencila.json
 function property {
   if [ -z "$2" ]; then
@@ -478,10 +495,17 @@ function start {
 # 
 ###############################################################################
 
+# Check for options
+for arg in "$@"; do
+  if [ "$arg" == "--mock" ]; then
+    mock "$@"
+  fi
+done
+
 # Exclude from coverage
 # LCOV_EXCL_START
 if [ "$1" == "" ]; then
-  error "No task supplied. Usage: sibyl <task> [<option>, ...]"
+  error "No task supplied. Usage: sibyl <task> [<arg>, ...] [--<option>, ...]"
 else
   case $1 in
     sourced) ;; # Just to allow test file to source this silently
