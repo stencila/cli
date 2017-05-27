@@ -128,7 +128,7 @@ function fetch {
     fi
   fi
 
-  read scheme path <<< $(echo "$address" | sed -rn "s/^(file|github):\/\/(.+)/\1 \2/p")
+  read scheme path <<< "$(echo "$address" | sed -rn "s!^(file|github)://(.+)!\1 \2!p")"
   info "Fetching using scheme '${cyan}$scheme${normal}' with path '${cyan}$path${normal}'"
 
   case $scheme in
@@ -160,7 +160,7 @@ function fetch_file_directory {
 function fetch_file_archive {
   path=$1 # Address path i.e. path/archive.tar.gz/folder
 
-  read archive folder <<< $(echo "$path" | sed -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")
+  read archive folder <<< "$(echo "$path" | sed -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
   info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
   # Check the folder exists in the archive
@@ -184,7 +184,7 @@ function fetch_file_archive {
 function fetch_github {
   path=$1 # Address path i.e. repo/user/folder
 
-  read user repo folder <<< $(echo "$path" | sed -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")
+  read user repo folder <<< $"(echo "$path" | sed -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
 
   # Dowload the archive
