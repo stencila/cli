@@ -23,7 +23,7 @@ if test -t 1; then
     green="$(tput setaf 2)"
     yellow="$(tput setaf 3)"
     blue="$(tput setaf 4)"
-    #magenta="$(tput setaf 5)"
+    magenta="$(tput setaf 5)"
     cyan="$(tput setaf 6)"
     #white="$(tput setaf 7)"
   fi
@@ -464,7 +464,7 @@ function start {
   id=$(docker run --publish $port:2000 --detach "$(property name)" stencila-node)
   info "Container $cyan$id$normal started"
 
-  echo -e "${green}GOTO${normal} $port"
+  echo -e "${magenta}GOTO${normal} $port"
 }
 
 

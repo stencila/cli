@@ -8,7 +8,7 @@ build:
 	docker build images/alpha-base --tag stencila/alpha-base
 
 lint:
-	shellcheck sibyl
+	shellcheck sibyl test.sh
 
 test:
 	bash test.sh

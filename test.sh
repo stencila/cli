@@ -2,34 +2,41 @@
 
 . sibyl sourced
 
+# Prevent linter warnings by declaring variables 
+# sourced from main script
+declare magenta
+declare red
+declare green
+declare normal
+
 # Testing functions
 
 passes=0
 fails=0
 
 function test_ {
-  printf "${magenta}TEST${normal} $1\n"
+  echo -e "${magenta}TEST${normal} $1"
 }
 
 function pass {
-  printf "${green}PASS${normal} $1\n"
-  passes=$(($passes + 1))
+  echo -e "${green}PASS${normal} $1"
+  passes=$(( passes + 1 ))
 }
 
 function fail {
-  printf "${red}FAIL${normal} $1\n"
-  fails=$(($fails + 1))
+  echo -e "${red}FAIL${normal} $1"
+  fails=$(( fails + 1 ))
 }
 
 # Assertion functions
 
 function assert_no_diff {
-  diff_output=$(diff $1 $2)
+  diff_output=$(diff "$1" "$2")
   diff_status=$?
   if [ "$diff_status" == 0 ]; then
-    pass $1
+    pass "$1"
   else
-    fail $1
+    fail "$1"
     echo "$diff_output" | indent
   fi
 }
@@ -38,16 +45,16 @@ function assert_no_diff {
 
 for dir in tests/*/
 do
-  test_ $(basename $dir)
-  cd $dir
+  test_ "$(basename "$dir")"
+  cd "$dir"
 
   origin=$(property origin)
   if [ "$origin" != "" ]; then
-    fetch $origin
+    fetch "$origin"
   fi
   
   compile
-  for file in $(ls -1 | grep ".expected"); do
+  for file in *.expected; do
     assert_no_diff "${file%.*}" "$file"
   done
 
