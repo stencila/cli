@@ -5,7 +5,7 @@ setup:
 	sudo apt-get install shellcheck
 
 build:
-	docker build images/alpha-base --tag stencila/alpha-base
+	docker build images/alpha --tag stencila/alpha
 
 lint:
 	shellcheck sibyl test.sh
