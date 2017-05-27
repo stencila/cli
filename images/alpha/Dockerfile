@@ -21,6 +21,7 @@ RUN apt-get update \
     gfortran \
     jq \
     libcurl4-openssl-dev \
+    libssh2-1-dev \
     libssl-dev \
     libxml2-dev \
     software-properties-common \
@@ -51,7 +52,7 @@ RUN Rscript -e "\
       ', ' +')[[1]][-1], lib='/usr/local/lib/R/site-library', repo='http://cran.rstudio.org/'); \
       devtools::install_github(strsplit(' \
         stencila/r \
-      ', ' +')[[1]][-1])); \
+      ', ' +')[[1]][-1]); \
       stencila:::install();"
 
 ###############################################################################
@@ -63,4 +64,4 @@ USER guest
 WORKDIR /home/guest
 
 # Copy environment reflection script
-COPY environ.sh environ.sh
+COPY stencila-environ.sh stencila-environ.sh
