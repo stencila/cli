@@ -10,7 +10,7 @@ build:
 lint:
 	shellcheck sibyl
 
-test: lint
+test:
 	bash test.sh
 
 cover:

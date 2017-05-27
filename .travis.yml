@@ -25,6 +25,7 @@ install:
 
 script:
   - make build
+  - make lint
   - make cover
 
 after_success:
