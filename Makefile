@@ -11,7 +11,7 @@ run:
 	npm start
 
 lint:
-	shellcheck *.sh
+	shellcheck *.sh && npm run lint
 
 test:
 	bash test.sh

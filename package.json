@@ -2,11 +2,8 @@
   "name": "stencila-sibyl",
   "version": "0.26.0",
   "description": "Stencila in containers",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "test": "standard",
+    "lint": "standard",
     "start": "node server/server.js"
   },
   "bin": {
