@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. sibyl sourced
+. sibyl.sh sourced
 
 # Prevent linter warnings by declaring variables 
 # sourced from main script
