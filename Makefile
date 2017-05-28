@@ -7,6 +7,9 @@ setup:
 build:
 	docker build images/alpha --tag stencila/alpha
 
+run:
+	npm start
+
 lint:
 	shellcheck *.sh
 
