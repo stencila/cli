@@ -54,8 +54,8 @@ function error {
 # Mock time consuming processes.
 # Used during development and testing
 function mock {
-  function wget {
-    echo "Mocking 'wget $*'"
+  function curl {
+    echo "Mocking 'curl $*'"
   }
   function docker {
     echo "Mocking 'docker $*'"
@@ -64,7 +64,7 @@ function mock {
 
 # Unset mocking functions
 function unmock {
-  unset wget
+  unset curl
   unset docker
 }
 
@@ -204,11 +204,13 @@ function fetch_github {
   read user repo folder <<< "$(echo "$path" | sed -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
 
-  # Dowload the archive
+  # Download the archive
+  local archive
   archive=$(mktemp --dry-run --suffix '.tar.gz')
-  wget -O "$archive" "https://github.com/$user/$repo/tarball/master"
+  curl --silent --show-error --location "https://github.com/$user/$repo/tarball/master" > "$archive"
 
   # Get the name of the root directory and strip off the trailing slash
+  local root
   root=$(tar --exclude='*/*' -tf "$archive")
 
   # Fetch from the file archive

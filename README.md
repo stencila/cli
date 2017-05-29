@@ -23,7 +23,7 @@ curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local
 chmod 755 ~/.local/bin/sibyl
 ```
 
-Sibyl requires [`docker`](https://docs.docker.com/engine/installation/) and [`jq`](https://stedolan.github.io/jq/) to be installed.
+The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/) and [`jq`](https://stedolan.github.io/jq/). The Sibyl Node.js server requires `node` v7.6.0 or higher.
 
 ### Use
 
