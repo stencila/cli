@@ -477,7 +477,7 @@ function start {
   done
 
   info "Starting container on port $cyan$port$normal"
-  id=$(docker run --publish $port:2000 --detach "$(property image.name)" stencila-node)
+  id=$(docker run --publish $port:2000 --detach "$(property image.name)" node -e "require('stencila-node').run('0.0.0.0', 2000)")
   info "Container $cyan$id$normal started"
 
   echo -e "${magenta}GOTO${normal} $port"
