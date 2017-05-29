@@ -5,12 +5,19 @@
 
 FROM ubuntu:16.04
 
+# Add a user (creating home and specifying shell) and
+# setup working environment
+# This needs to be done before any node packages are installed so that they are
+# available form `~/node_modules/` to be `require()`d (global modules cannot be)
+RUN useradd --create-home --shell /bin/bash guest
+WORKDIR /home/guest
+
 # Turn off interactive installs
 # See https://github.com/phusion/baseimage-docker/issues/58
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install system packages that are frequently required in research computing
-# and/or for installation of language runtimes and packages
+# Install language runtimes and system packages that are frequently 
+# required in research computing and/or for language packages
 RUN apt-get update \
  && apt-get install -y \
     apt-transport-https \
@@ -20,48 +27,59 @@ RUN apt-get update \
     g++ \
     gfortran \
     jq \
+    libcairo2-dev \
     libcurl4-openssl-dev \
+    libgif-dev \
+    libjpeg-dev \
     libssh2-1-dev \
     libssl-dev \
     libxml2-dev \
     software-properties-common \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/
-
-###############################################################################
-
-# Install Node.js
-RUN curl -sL "https://deb.nodesource.com/setup_7.x" | bash \
- && apt-get install -y nodejs \
- && npm install --global stencila-node
-
-###############################################################################
-
-# Install R and any other libraries required by R packages
-RUN add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/' \
+ && curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+ && add-apt-repository 'deb https://deb.nodesource.com/node_7.x xenial main' \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 \
+ && add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/' \
  && apt-get update \
- && apt-get install -y r-base r-base-dev \
+ && apt-get install -y \
+    nodejs \
+    python python-dev python-pip \
+    r-base r-base-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/
+
+# Install Node packages
+RUN npm install \
+      @stdlib/stdlib
+
+# Install Python packages
+RUN pip install --upgrade pip \
+ && pip install \
+    ipython \
+    jupyter \
+    matplotlib \
+    numpy \
+    pandas \
+    scipy \
+    sympy
 
 # Install R packages
 RUN Rscript -e "\
-      install.packages(strsplit(' \
-        devtools \
-      ', ' +')[[1]][-1], lib='/usr/local/lib/R/site-library', repo='http://cran.rstudio.org/'); \
-      devtools::install_github(strsplit(' \
-        stencila/r \
-      ', ' +')[[1]][-1]); \
-      stencila:::install();"
+    install.packages(strsplit(' \
+      devtools \
+      tidyverse \
+    ', ' +')[[1]][-1], lib='/usr/local/lib/R/site-library', repo='http://cran.rstudio.org/'); \
+    devtools::install_github(strsplit(' \
+    ', ' +')[[1]][-1]);"
 
-###############################################################################
+# Install Stencila packages
+# Currently here near the end for easy updating during development
 
-# Add a user (creating home and specifying shell) and
-# setup working environment
-RUN useradd --create-home --shell /bin/bash guest
-USER guest
-WORKDIR /home/guest
+RUN npm install https://github.com/stencila/node/tarball/0.27-preview && node -e "require('stencila-node').install()"
+RUN pip install https://github.com/stencila/py/tarball/0.27-preview && python -c "import stencila; stencila.install()"
+RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview'); stencila:::install();"
 
 # Copy environment reflection script
 COPY stencila-environ.sh stencila-environ.sh
+
+# Switch to guest user
+USER guest
