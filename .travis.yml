@@ -22,10 +22,8 @@ addons:
       - libiberty-dev
       - cmake
 
-install:
-  - bash kcov-install.sh
-
 script:
+  - make setup
   - make build
   - make lint
   - make cover

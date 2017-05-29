@@ -1,6 +1,7 @@
 all: setup build cover
 
 setup:
+	npm install
 	bash kcov-install.sh
 	sudo apt-get install shellcheck
 
