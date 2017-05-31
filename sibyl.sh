@@ -107,15 +107,6 @@ function property {
   fi
 }
 
-# Update a bundle's stencila.json
-function update {
-  test ! -e "stencila.json" && touch stencila.json
-  local temp_file
-  temp_file=$(mktemp)
-  echo "$1" > "$temp_file"
-  cat stencila.json "$temp_file" | jq --slurp add > temp.json && mv temp.json stencila.json
-}
-
 ###############################################################################
 #
 # 0. Initialize
@@ -185,6 +176,11 @@ function fetch {
     github) fetch_github "$path" ;;      
     *)      error "Unknown scheme: $scheme" ;;
   esac
+
+  # Update the sha1 property : the SHA1 of files in the bundle
+  local sha1
+  sha1=$(find . -type f -not -path './stencila.*' -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
+  property sha1 "\"$sha1\""
 }
 
 # Fetch from the local filesystem
@@ -301,22 +297,16 @@ function compile {
     install_r
   fi
 
-  # Calculate a sha of files in the directory
-  local sha1
-  sha1=$(find . -type f -not -path './stencila.*' -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
-
-  # If the contents have changed then create tarball
-  if [ "$sha1" != "$(property sha1)" ] || [ ! -f stencila.tar.gz ]; then
-    # Archive the contents of the directory
-    tar czf stencila.tar.gz --exclude "./Dockerfile" --exclude "./stencila.*" .
-  fi
+  # Archive the contents of the directory
+  tar czf stencila.tar.gz --exclude "./Dockerfile" --exclude "./stencila.*" .
 
   # Copy and extract tarball into container
   printf "COPY stencila.tar.gz stencila.tar.gz\nRUN tar xf stencila.tar.gz && rm stencila.tar.gz\n" >> Dockerfile
 
-  # Update stencila.json with image details
-  property sha1 "\"$sha1\""
-
+  # Update the image property
+  property image "{
+    \"compiled\": \"$(date --iso-8601=seconds)\"
+  }"
 }
 
 # Install Node.js and packages
@@ -469,15 +459,14 @@ function build {
   docker build --tag "$repository:$tag" . | indent
 
   # Update the image property
-  update "{
-    \"image\": {
-      \"platform\": {
-        \"name\": \"docker\",
-        \"version\": \"$(docker --version | sed -rn 's!Docker version (.*)!\1!p')\"
-      },
-      \"repository\": \"$repository\",
-      \"tag\": \"$tag\",
-      \"built\": \"$(date --iso-8601=seconds)\"
+  property image "{
+    \"compiled\": \"$(property image.compiled)\",
+    \"built\": \"$(date --iso-8601=seconds)\",
+    \"repository\": \"$repository\",
+    \"tag\": \"$tag\",
+    \"platform\": {
+      \"name\": \"docker\",
+      \"version\": \"$(docker --version | sed -rn 's!Docker version (.*)!\1!p')\"
     }
   }"
 }
