@@ -1,11 +1,4 @@
 {
-  "image": {
-    "platform": {
-      "name": "docker",
-      "version": "17.03.1-ce, build c6d412e"
-    },
-    "name": "stencila/404b85762660cffeb7952067f6561b92031f5b51"
-  },
   "origin": "github://octocat/spoon-knife",
-  "sha": "2925cb41347df962cff37cfbd9a9918f8f05df13"
+  "sha1": "2925cb41347df962cff37cfbd9a9918f8f05df13"
 }

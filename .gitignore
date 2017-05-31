@@ -2,7 +2,7 @@ coverage
 node_modules
 
 # Ignore folders created by `init`
-folders
+bundles
 
 # Ignore files generated in tests but not
 # expected files
