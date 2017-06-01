@@ -64,11 +64,6 @@ do
   test_ "$(basename "$dir")"
   cd "$dir"
 
-  # If `origin` is defined then `fetch`
-  origin=$(property origin)
-  if [ "$origin" != "null" ]; then
-    fetch "$origin"
-  fi
   # Compile
   compile
 
