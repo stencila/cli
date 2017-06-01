@@ -27,17 +27,19 @@ The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https
 
 ### Use
 
-Sibyl performs several key tasks with folders of files:
+Sibyl builds and runs execution environments for reprodubile document bundles. A *bundle* is a collection of one or more files that contain the source of the document, and optionally, supporting data, code and specifications of dependencies.
 
-- `fetch` : fetches a folder from some remote or local location
-- `build` : builds a Docker container image based on the contents of the folder
+Sibyl performs several key tasks with bundles:
+
+- `fetch` : fetches a bundle from some remote or local location
+- `build` : builds a Docker container image based on the contents of the bundle
 - `check` : checks that the container image has the environment specified
 - `start` : starts a container from the image with a running Stencila host
 - `launch`: does all of the above tasks
 
 These tasks are implemented in [`sibyl.sh`](sibyl.sh) and can be run at the command line: e.g `sibyl launch github://stencila/test`
 
-The [`server`](server/server.js) provides a web interface to `sibyl launch`. Start it with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a folder address (e.g. `github://stencila/test` or `file://some/folder`) it will launch a container based on that folder, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the folder's "main" document running inside the container.
+The [`server`](server/server.js) provides a web interface to `sibyl launch`. Start it with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
 
 ##### Standard containers
 
