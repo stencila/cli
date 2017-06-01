@@ -8,6 +8,14 @@
 > 1. in ancient Greece a woman believed to be an oracle incapable of speaking mistruths
 > 2. a tool for building and running containers for authoring and reproducing [Stencila](https://stenci.la) documents
 
+### Why?
+
+Stencila is available for the [desktop](https://github.com/stencila/desktop) but what if you want to publish a document without your readers having to install any software? What if you want to collaborate on a reproducible document using exactly the same versions of packages for R, Python or Node.js?
+
+Sibyl builds and runs execution environments for reproducible document bundles. A *bundle* is a collection of one or more files that contain the source of the document, supporting data and/or specifications of dependencies. Sibyl fetches a bundle, builds a container for it and opens the document.
+
+Sibyl is an evolution of [previous](https://github.com/stencila/stencila/tree/jurassic/docker) [approaches](https://github.com/stencila/hub/tree/077dc00044f010b6d4150e6e0e18823815307e13/worker) to containerizing Stencila documents. It is inspired by the elegance of [Binder](https://github.com/binder-project/binder) and takes advantage of our new decoupled architecture to allow reproducible environments for documents written in various formats (e.g. HTML, RMarkdown, Jupyter notebooks) using various (and possibly multiple) languages (i.e. R, Python, Node.js).
+
 ### Install
 
 Install the Node.js [package](https://www.npmjs.com/package/stencila-sibyl):
@@ -27,8 +35,6 @@ The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https
 
 ### Use
 
-Sibyl builds and runs execution environments for reprodubile document bundles. A *bundle* is a collection of one or more files that contain the source of the document, and optionally, supporting data, code and specifications of dependencies.
-
 Sibyl performs several key tasks with bundles:
 
 - `fetch` : fetches a bundle from some remote or local location
@@ -39,22 +45,20 @@ Sibyl performs several key tasks with bundles:
 
 These tasks are implemented in [`sibyl.sh`](sibyl.sh) and can be run at the command line: e.g `sibyl launch github://stencila/test`
 
-The [`server`](server/server.js) provides a web interface to `sibyl launch`. Start it with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
+The [`server`](server/server.js) provides a web interface to `sibyl launch`. Start it with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `http://localhost:3000/github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
 
-##### Standard containers
+### Containers
 
-Sibyl's *standard* container images are intended to be comprehesive environments for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these images. The [`images`](images) folder contains Dockerfiles that define how each stream is built. Currently there is only one *stream* of standard images: `alpha`.
+For each bundle Sibyl creates a Docker container. All bundle containers are based off one of Sibyl's standard container images. Those images have Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) as well as a large number of system libraries and packages for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these base images. The [`images`](images) folder contains Dockerfiles that define how each stream is built. Currently there is only one *stream* of standard images: `alpha`.
 
-##### Custom containers
+You can further customize the container by specifying one or more requirements files in your bundle:
 
-In addition to standard containers, `sibyl build` allows for the easy creating of custom containers. One use case for custom containers is where the author wishes to specify how the container is to be build by provding one or more of:
-
-- `Dockerfile`
 - `requirements.txt` for specifying a Python version and/or package versions
 - `r-requires.txt` for specifying a R version and/or package versions
 - `package.json` for specifying a Node.js version and/or package versions
+- `Dockerfile`for completely customizing the container (but must use a Stencila image as a base e.g. `FROM stencila/alpha`)
 
-The other use case for custom containers is where users want a container that is as close as possible to their local environment. The Stencila packages for R, Python and Node.js provide a `environ` function which produce a description of the language runtime and the installed package versions. For example, in R, the command `stencila:::envrion()` produces a JSON like this:
+The other use case for custom containers is where users want a container that is as close as possible to their local environment. It is not currently implemented, but we're planning on adding this "make a container like my local environment" functionality. The Stencila packages for R, Python and Node.js provide a `environ` function which produce a description of the language runtime and the installed package versions. For example, in R, the command `stencila:::envrion()` produces the JSON below which could be used to build a container with the right versions of R and R packages.
 
 ```json
 {
@@ -73,5 +77,3 @@ The other use case for custom containers is where users want a container that is
     "bitops": "1.0-6",
 ...
 ```
-
-When you author a document on your local machine, Stencila records this information, so that a container as close a possible to your authoring environment is reproduced.
