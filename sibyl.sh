@@ -68,8 +68,8 @@ function unmock {
   unset docker
 }
 
-# Translate a bundle address into a bundle name that
-# can be used as
+# Translate a bundle address into a unique bundle name that
+# can be used as a Docker repository name
 function name {
   local name
   # Translate non-ASCII characters, upper case to lower case, and 
@@ -88,7 +88,7 @@ function name {
   echo "$name"
 }
 
-# Get or set a property in a bundle's stencila.json
+# Get or set a property in for the current bundle
 function property {
   if [ -z "$2" ]; then
     # Get (second arg not given)
@@ -107,7 +107,7 @@ function property {
   fi
 }
 
-# Get the image repository and tag for this bundle
+# Get the Docker image repository name and tag for the current bundle
 function image_repo_tag {
   # In Docker a "repository" is any group of builds of an image with the same 
   # name, and potentially multiple tags (not to be confused with a Docker "registry")
@@ -123,18 +123,19 @@ function image_repo_tag {
   echo "$repository:$tag"
 }
 
-# Does an image already exist for this bundle
+# Does a Docker image already exist for the current bundle?
 function image_exists {
   # Get the repository and tag for this image
   local repo
   local tag
   IFS=':' read repo tag <<< $(image_repo_tag)
-  # Is a registry being used?
+  # Is a Docker registry being used?
   if [ -z "$SIBYL_REGISTRY" ]; then
     # No, check images locally
     docker images --quiet "$repo:$tag"
   else
     # Yes, check the registry
+    # TODO
     curl "$SIBYL_REGISTRY/v2/$repo/manifests/$tag" | grep 404
   fi
 }
