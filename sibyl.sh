@@ -107,33 +107,59 @@ function property {
   fi
 }
 
-###############################################################################
-#
-# 0. Initialize
-# 
-###############################################################################
+# Get the image repository and tag for this bundle
+function image_repo_tag {
+  # In Docker a "repository" is any group of builds of an image with the same 
+  # name, and potentially multiple tags (not to be confused with a Docker "registry")
+  # See https://docs.docker.com/registry/spec/api/#overview for rules for repository
+  # names
+  local repository
+  repository="stencila/bundles/$(property name)"
+  # A tag is used for different builds of an image. We use the sha1 of the 
+  # bundle
+  local tag
+  tag="$(property sha1)"
 
-function init {
-  step 0 'Initialize'
-
-  local name_
-  name_=$(name "$1")
-
-  local directory
-  directory="bundles/$name_"
-  
-  info "Initializing directory $cyan$directory$normal for address $cyan$address$normal"
-
-  mkdir -p "$directory"
-  pushd "$directory" > /dev/null
-  property name "\"$name_\""
+  echo "$repository:$tag"
 }
 
+# Does an image already exist for this bundle
+function image_exists {
+  # Get the repository and tag for this image
+  local repo
+  local tag
+  IFS=':' read repo tag <<< $(image_repo_tag)
+  # Is a registry being used?
+  if [ -z "$SIBYL_REGISTRY" ]; then
+    # No, check images locally
+    docker images --quiet "$repo:$tag"
+  else
+    # Yes, check the registry
+    curl "$SIBYL_REGISTRY/v2/$repo/manifests/$tag" | grep 404
+  fi
+}
 
 ###############################################################################
 #
-# 1. Fetch
+# Launch a document bundle
 # 
+###############################################################################
+
+function launch {
+  # Fetch the bundle and change into it's directory
+  fetch "$1"
+  # Is there already an image in the registry for this bundle state?
+  if [ "$(image_exists)" == "" ]; then
+    # No, so build and check it
+    build
+    check
+  fi
+  # Start it
+  start
+}
+
+###############################################################################
+#
 # Fetch a bundle from an address:
 # 
 # - `file://parent/folder` : a folder on the local filesystem
@@ -148,39 +174,43 @@ function init {
 function fetch {
   step 1 'Fetch'
 
+  local address
   address=$1 # Address e.g. http://example.com/path/archive.tar.gz/folder
-  origin=$(property origin) # Existing address in stencila.json
-
-  # If address was supplied, check that it does not conflict with existing origin
   if [ "$address" == "" ]; then
-    if [ "$origin" == "null" ]; then
-      error "Nothing to fetch: usage \`${yellow}sybil fetch some-address-to-fetch${normal}\`"
-    else
-      address=$origin
-    fi
-  else
-    if [ "$origin" == "null" ]; then
-      origin="$address"
-      property origin "\"$address\""
-    fi
-    if [ "$address" != "$origin" ]; then
-      error "Attempting to fetch address \`${cyan}$address${normal}\` when origin is already \`${cyan}$origin${normal}\`"
-    fi
+    error "Nothing to fetch: usage \`${yellow}sybil fetch some-address-to-fetch${normal}\`"
   fi
 
-  read scheme path <<< "$(echo "$address" | sed -rn "s!^(file|github)://(.+)!\1 \2!p")"
-  info "Fetching using scheme '${cyan}$scheme${normal}' with path '${cyan}$path${normal}'"
+  local bundle
+  bundle=$(name "$address")
 
+  local directory
+  directory="./bundles/$bundle"
+
+  read scheme path <<< "$(echo "$address" | sed -rn "s!^(file|github)://(.+)!\1 \2!p")"
+  info "Fetching scheme '${cyan}$scheme${normal}' with path '${cyan}$path${normal}'"
+
+  # Create the bundle directory if necessary
+  mkdir -p "$directory"
+
+  # Clean the bundle directory to ensure not files
+  # exist from a previous fetch
+  rm -rf "${directory:?}/*"
+
+  # Enter directory and fetch
+  pushd "$directory" > /dev/null
   case $scheme in
     file)   fetch_file "$path" ;;
     github) fetch_github "$path" ;;      
     *)      error "Unknown scheme: $scheme" ;;
   esac
 
-  # Update the sha1 property : the SHA1 of files in the bundle
+  # Set the sha1 property : the SHA1 of files in the bundle
   local sha1
-  sha1=$(find . -type f -not -path './stencila.*' -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
+  sha1=$(find . -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | awk '{print $1}')
   property sha1 "\"$sha1\""
+
+  # Set the name property
+  property name "\"$bundle\""
 }
 
 # Fetch from the local filesystem
@@ -245,12 +275,9 @@ function fetch_github {
   fetch_file_archive "$archive/$root$folder"
 }
 
-
 ###############################################################################
 #
-# 2. Build
-# 
-# Build an environment for the bundle
+# Build a container image for the bundle
 # 
 ###############################################################################
 
@@ -444,25 +471,19 @@ function build {
 
   compile
 
-  # In Docker a "repository" is any group of builds of an image with the same 
-  # name, and potentially multiple tags (not to be confused with a Docker "registry")
-  # See https://docs.docker.com/registry/spec/api/#overview for rules for repository
-  # names
-  local repository
-  repository="stencila/sibyl/$(property name)"
-  # A tag is used for different builds of an image. We use the sha1 of the 
-  # bundle
+  # Get the repository and tag for this image
+  local repo
   local tag
-  tag="$(property sha1)"
+  IFS=':' read repo tag <<< $(image_repo_tag)
 
-  info "Building Docker image $cyan$repository:$tag$normal"
-  docker build --tag "$repository:$tag" . | indent
+  info "Building Docker image $cyan$repo:$tag$normal"
+  docker build --tag "$repo:$tag" . | indent
 
   # Update the image property
   property image "{
     \"compiled\": \"$(property image.compiled)\",
     \"built\": \"$(date --iso-8601=seconds)\",
-    \"repository\": \"$repository\",
+    \"repository\": \"$repo\",
     \"tag\": \"$tag\",
     \"platform\": {
       \"name\": \"docker\",
@@ -474,8 +495,6 @@ function build {
 
 ###############################################################################
 #
-# 3. Check
-# 
 # Check the container has the expected environment
 # 
 ###############################################################################
@@ -484,7 +503,7 @@ function check {
   step 3 'Check'
 
   info 'Running container to check its environment'
-  docker run "$(property name)" bash stencila-environ.sh > stencila-environ.json
+  docker run "$(image_repo_tag)" bash stencila-environ.sh > stencila-environ.json
 
   # TODO compare stencila-environ.json with what was meant to be installed
 }
@@ -492,9 +511,7 @@ function check {
 
 ###############################################################################
 #
-# 4. Start
-# 
-# Start the document
+# Start a container
 # 
 ###############################################################################
 
@@ -508,8 +525,11 @@ function start {
       port_used=$(netstat --listening --all --tcp --numeric | grep ":$port")
   done
 
-  info "Starting container on port $cyan$port$normal"
-  id=$(docker run --publish $port:2000 --detach "$(property name)" node -e "require('stencila-node').run('0.0.0.0', 2000)")
+  # Set a timeout
+  local timeout=3600
+
+  info "Starting container on port $cyan$port$normal with timeout $cyan$timeout$normal seconds"
+  id=$(docker run --publish $port:2000 --detach "$(image_repo_tag)" node -e "require('stencila-node').run('0.0.0.0', 2000, $timeout)")
   info "Container $cyan$id$normal started"
 
   echo -e "${magenta}GOTO${normal} $port"
@@ -538,13 +558,13 @@ else
   case $1 in
     sourced) ;; # Just to allow test file to source this silently
 
-    # Tasks that can be useful during development
+    # Inspection
 
     property) property "$2" "$3" ;;
+    image_repo_tag) image_repo_tag ;;
+    registered) registered ;;
 
-    # Steps can be run individually...
-
-    init) init "$2" ;;
+    # Tasks
 
     fetch) fetch "$2" ;;
 
@@ -555,15 +575,7 @@ else
   
     start) start ;;
 
-    # but `launch` runs all steps.
-
-    launch)
-      init "$2"
-      fetch "$2"
-      build
-      check
-      start
-      ;;
+    launch) launch "$2" ;;
       
     *)
       error "Unknown task: $1"
