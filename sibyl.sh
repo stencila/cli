@@ -128,7 +128,7 @@ function image_exists {
   # Get the repository and tag for this image
   local repo
   local tag
-  IFS=':' read repo tag <<< $(image_repo_tag)
+  IFS=':' read repo tag <<< "$(image_repo_tag)"
   # Is a Docker registry being used?
   if [ -z "$SIBYL_REGISTRY" ]; then
     # No, check images locally
@@ -475,7 +475,7 @@ function build {
   # Get the repository and tag for this image
   local repo
   local tag
-  IFS=':' read repo tag <<< $(image_repo_tag)
+  IFS=':' read repo tag <<< "$(image_repo_tag)"
 
   info "Building Docker image $cyan$repo:$tag$normal"
   docker build --tag "$repo:$tag" . | indent
