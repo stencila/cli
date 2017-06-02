@@ -1,0 +1,17 @@
+# Container for running Sibyl
+
+FROM mhart/alpine-node
+
+RUN apk update \
+ && apk upgrade \
+ && apk add curl docker jq \
+ && rm -rf /var/cache/apk/*
+
+RUN mkdir /usr/app 
+WORKDIR /usr/app
+
+COPY . /usr/app/
+RUN npm install
+
+EXPOSE 3000
+CMD ["npm", "start"]
