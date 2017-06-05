@@ -16,7 +16,7 @@ lint:
 	shellcheck *.sh && npm run lint
 
 test:
-	bash test.sh
+	cd tests && bash run.sh
 
 cover:
-	kcov --exclude-pattern=test.sh coverage test.sh
+	cd tests && kcov --include-path=../sibyl.sh ../coverage run.sh

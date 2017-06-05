@@ -49,9 +49,17 @@ The [`server`](server/server.js) provides a web interface to `sibyl launch`. Sta
 
 ### Containers
 
-For each bundle Sibyl creates a Docker container. All bundle containers are based off one of Sibyl's standard container images. Those images have Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) as well as a large number of system libraries and packages for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these base images. The [`images`](images) folder contains Dockerfiles that define how each stream is built. Currently there is only one *stream* of standard images: `alpha`.
+Sibyl creates a Docker container image for each document bundle. All bundle container images are based on one of Sibyl's base container images. 
 
-You can further customize the container by specifying one or more requirements files in your bundle:
+#### Base containers
+
+The base images images have Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) as well as a large number of system libraries and packages for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these base images. The [`images`](images) folder contains Dockerfiles that define how each image is built. 
+
+Currently there is only one *stream* of base images: `alpha`. In the future, we may add more base images focussing on specific use cases (e.g. genomics)
+
+#### Bundle containers
+
+You can customize a bundle container by specifying one or more requirements files in your bundle:
 
 - `requirements.txt` for specifying a Python version and/or package versions
 - `r-requires.txt` for specifying a R version and/or package versions
@@ -77,3 +85,23 @@ The other use case for custom containers is where users want a container that is
     "bitops": "1.0-6",
 ...
 ```
+
+### Development
+
+
+
+### Development
+
+
+https://kubernetes.io/docs/getting-started-guides/minikube/
+
+```sh
+minikube start
+```
+
+Then 
+
+```sh
+eval $(minikube docker-env)
+```
+

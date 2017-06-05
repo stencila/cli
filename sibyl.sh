@@ -150,13 +150,13 @@ function launch {
   # Fetch the bundle and change into it's directory
   fetch "$1"
   # Is there already an image in the registry for this bundle state?
-  if [ "$(image_exists)" == "" ]; then
+  if [ "$(image_exists "$1")" == "" ]; then
     # No, so build and check it
-    build
-    check
+    build "$1"
+    check "$1"
   fi
   # Start it
-  start
+  start "$1"
 }
 
 ###############################################################################
@@ -212,6 +212,9 @@ function fetch {
 
   # Set the name property
   property name "\"$bundle\""
+
+  # Exit the directory
+  popd > /dev/null
 }
 
 # Fetch from the local filesystem
@@ -552,36 +555,37 @@ for arg in "$@"; do
   fi
 done
 
-# Run specified task
-if [ "$1" == "" ]; then
-  error "No task supplied. Usage: sibyl <task> [<arg>, ...] [--<option>, ...]"
-else
-  case $1 in
-    sourced) ;; # Just to allow test file to source this silently
+# Is Sibyl is being executed (not sourced)?
+if [ "${BASH_SOURCE[0]}" == "$0" ]; then
+  if [ "$1" == "" ]; then
+    # No arguments were supplied
+    error "No task supplied. Usage: sibyl <task> [<arg>, ...] [--<option>, ...]"
+  else
+    case $1 in
+      # Inspection
 
-    # Inspection
+      property) property "$2" "$3" ;;
+      image_repo_tag) image_repo_tag ;;
+      registered) registered ;;
 
-    property) property "$2" "$3" ;;
-    image_repo_tag) image_repo_tag ;;
-    registered) registered ;;
+      # Tasks
 
-    # Tasks
+      fetch) fetch "$2" ;;
 
-    fetch) fetch "$2" ;;
-
-    build) build ;;
-      compile) compile ;;
-    
-    check) check ;;
-  
-    start) start ;;
-
-    launch) launch "$2" ;;
+      build) build ;;
+        compile) compile ;;
       
-    *)
-      error "Unknown task: $1"
-      ;;
-  esac
+      check) check ;;
+    
+      start) start ;;
+
+      launch) launch "$2" ;;
+        
+      *)
+        error "Unknown task: $1"
+        ;;
+    esac
+  fi
 fi
 
 # LCOV_EXCL_STOP
