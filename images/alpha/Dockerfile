@@ -79,7 +79,7 @@ RUN pip install https://github.com/stencila/py/tarball/0.27-preview && python -c
 RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview'); stencila:::install();"
 
 # Copy environment reflection script
-COPY stencila-environ.sh stencila-environ.sh
+COPY environ.sh .environ.sh
 
 # Switch to guest user
 USER guest
