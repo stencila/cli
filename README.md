@@ -6,7 +6,7 @@
 
 > *ˈsɪbɪl* _noun_
 > 1. in ancient Greece a woman believed to be an oracle incapable of speaking mistruths
-> 2. a tool for building and running containers for authoring and reproducing [Stencila](https://stenci.la) documents
+> 2. a tool for building and running containers for reproducible documents
 
 ### Why?
 
@@ -24,6 +24,8 @@ Install the Node.js [package](https://www.npmjs.com/package/stencila-sibyl):
 npm install stencila-sibyl
 ```
 
+The Sibyl Node.js server requires `node` v7.6.0 or higher.
+
 Alternatively, if you only want to use the Bash [script](https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh), download it to somewhere on your `$PATH` and make it executable e.g. on Linux:
 
 ```sh
@@ -31,17 +33,25 @@ curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local
 chmod 755 ~/.local/bin/sibyl
 ```
 
-The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/) and [`jq`](https://stedolan.github.io/jq/). The Sibyl Node.js server requires `node` v7.6.0 or higher.
+The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/) and [`jq`](https://stedolan.github.io/jq/) and `netstat`.
+
+Or, instead of installing everything, you can just run the Docker image:
+
+```sh
+docker run --publish 3000:3000 stencila/sibyl
+```
+
+[Actually, right now the `stencila/sibyl` image is not completely functional because it's attempting to use Docker-in-Docker (which needs some configuring,...or avoiding)]
 
 ### Use
 
 Sibyl performs several key tasks with bundles:
 
 - `fetch` : fetches a bundle from some remote or local location
-- `build` : builds a Docker container image based on the contents of the bundle
+- `compile` : compiles a Dockerfile based on the contents of the bundle
+- `build` : builds a Docker container image from the Dockerfile for the bundle
 - `check` : checks that the container image has the environment specified
-- `start` : starts a container from the image with a running Stencila host
-- `launch`: does all of the above tasks
+- `launch` : starts a container from the image with a running Stencila host
 
 These tasks are implemented in [`sibyl.sh`](sibyl.sh) and can be run at the command line: e.g `sibyl launch github://stencila/test`
 
@@ -88,18 +98,15 @@ The other use case for custom containers is where users want a container that is
 
 ### Development
 
+#### Minikube
 
-
-### Development
-
-
-https://kubernetes.io/docs/getting-started-guides/minikube/
+During development, because the base image sizes can large it can be handy to [install Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/), start it:
 
 ```sh
 minikube start
 ```
 
-Then 
+Then use the Docker daemon inside the Minikube cluster by setting the `DOCKER_` environment variables:
 
 ```sh
 eval $(minikube docker-env)

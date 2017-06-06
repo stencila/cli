@@ -10,7 +10,7 @@ RUN apk update \
 RUN mkdir /usr/app 
 WORKDIR /usr/app
 
-COPY . /usr/app/
+COPY . .
 RUN npm install
 
 EXPOSE 3000
