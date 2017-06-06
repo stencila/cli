@@ -30,3 +30,8 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker push stencila/sibyl;
+      docker push stencila/alpha;
+    fi
