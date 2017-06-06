@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
 ###############################################################################
-#
-# 0. Utilties
 # 
-# Utility functions and variables used below
+# Output and mocking functions and variables
 # 
 ###############################################################################
 
+# Exclude from coverage
+# LCOV_EXCL_START
+
 # Assign colors if stdout is a terminal supporting colors
 if test -t 1; then
-  # Exclude from coverage
-  # LCOV_EXCL_START
   ncolors=$(tput colors)
   if test -n "$ncolors" && test "$ncolors" -ge 8; then
     #bold="$(tput bold)"
@@ -21,13 +20,12 @@ if test -t 1; then
     #black="$(tput setaf 0)"
     red="$(tput setaf 1)"
     green="$(tput setaf 2)"
-    yellow="$(tput setaf 3)"
+    #yellow="$(tput setaf 3)"
     blue="$(tput setaf 4)"
     magenta="$(tput setaf 5)"
     cyan="$(tput setaf 6)"
     #white="$(tput setaf 7)"
   fi
-  # LCOV_EXCL_STOP
 fi
 
 # Indent lines
@@ -68,6 +66,7 @@ function unmock {
   unset docker
 }
 
+# LCOV_EXCL_STOP
 
 ###############################################################################
 #
