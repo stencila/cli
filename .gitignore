@@ -1,10 +1,7 @@
 coverage
 node_modules
-
-# Ignore folders created by `init`
 bundles
 
-# Ignore files generated in tests but not
-# expected files
-tests/**/*
-!tests/**/*.expected
+# Ignore files generated in tests but not `.expected` files
+tests/*/.sibyl/*
+!tests/*/.sibyl/*.expected

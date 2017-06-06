@@ -1,0 +1,2 @@
+FROM stencila/alpha
+COPY . .
