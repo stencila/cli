@@ -146,14 +146,12 @@ function fetch {
   local dir_
   dir_="./bundles/$(bundle_name "$1")"
 
-  # Create the bundle directory if necessary
-  mkdir -p "$dir_"
-
-  # Clean the bundle directory to ensure no files
+  # Remove the bundle directory to ensure no files
   # exist from a previous fetch
-  rm -rf "${dir_:?}/*"
+  rm -rf "$dir_"
 
-  # Enter the directory
+  # Create the bundle directory and enter it
+  mkdir -p "$dir_"
   pushd "$dir_" > /dev/null
   info "Changed to directory $cyan'$PWD'$normal"
 
@@ -188,26 +186,35 @@ function fetch_file {
 
 function fetch_file_directory {
   local path=$1 # Filesystem path i.e. ./parent/folder
+
   info "Fetching from directory '$cyan$path$normal'"
-  cp -R "$path/." "."
+  cp -R "$path"/. .
 }
 
 function fetch_file_archive {
-  path=$1 # Address path i.e. path/archive.tar.gz/folder
+  local path=$1 # Address path i.e. path/archive.tar.gz/folder
 
+  # Get the archive file path and folder to extract from the address path
+  local archive
+  local folder
   read archive folder <<< "$(echo "$path" | sed -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
   info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
-  # Check the folder exists in the archive
-  lines=$(tar -tf "$archive" "$folder" 2> /dev/null | wc -l)
-  if [ "$lines" == "0" ]; then
-    error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
+  # Extract into a temporary dir, move contents (including dot files)
+  # to here and then tidy up
+  local temp
+  temp=$(mktemp -d)
+  if [ "$folder" == "" ]; then
+    tar -xzf "$archive" -C "$temp"
+    mv "$temp"/* "$temp"/.[!.]* .
+  else
+    if [ "$(tar -tf "$archive" "$folder" 2> /dev/null | wc -l)" == "0" ]; then
+      error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
+    fi
+    tar -xzf "$archive" -C "$temp" "$folder"
+    mv "$temp/$folder"/* "$temp/$folder"/.[!.]* .
   fi
-
-  # Extract it
-  tar -xzf "$archive" "$folder"
-  mv ./"$folder"/* .
-  rm -rf ./"$folder"
+  rm -rf "$temp"
 }
 
 function fetch_github {
@@ -227,6 +234,9 @@ function fetch_github {
 
   # Fetch from the file archive
   fetch_file_archive "$archive/$root$folder"
+
+  # Tidy up by removing the archive
+  rm "$archive"
 }
 
 ###############################################################################
