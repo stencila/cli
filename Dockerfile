@@ -4,7 +4,7 @@ FROM mhart/alpine-node
 
 RUN apk update \
  && apk upgrade \
- && apk add curl docker jq \
+ && apk add bash curl docker jq \
  && rm -rf /var/cache/apk/*
 
 RUN mkdir /usr/app 

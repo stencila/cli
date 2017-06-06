@@ -8,7 +8,7 @@ source "funcs.sh"
 test_ "bundle_name"
 assert_equal "$(bundle_name "file://folder/subfolder")" "file-folder-subfolder-4329642ba3"
 assert_equal "$(bundle_name "github://foo/bar/folder/subFOLDER")" "github-foo-bar-folder-subfolder-a022134984"
-assert_equal "$(bundle_name "file://home/user/Esperança-vôo-avião")" "file-home-user-esperanca-voo-aviao-2169b6d973"
+assert_equal "$(bundle_name "file://home/user/Esperança-vôo-avião")" "file-home-user-esperan-a-v-o-avi-o-2169b6d973"
 
 # Folder tests (tests that run in a directory)
 

@@ -79,9 +79,11 @@ function unmock {
 function bundle_name {
   if [ "$1" != "" ]; then
     local name_
-    # Translate non-ASCII characters, upper case to lower case, and 
+    # Translate upper case to lower case, and 
     # any non-alpha-numerics to a dash
-    name_=$(echo "$1" | iconv -t ascii//TRANSLIT | tr '[:upper:]' '[:lower:]' | tr -cs '[:alnum:]' '-')
+    # This used to include `iconv -t ascii//TRANSLIT` to translate non-ASCII
+    # chars but that is not available in [Alpine Linux](https://github.com/gliderlabs/docker-alpine/issues/216)
+    name_=$(echo "$1" | tr '[:upper:]' '[:lower:]' | tr -cs '[:alnum:]' '-')
     # Remove trailing dash and adjacent dashes
     name_="${name_##-}"
     name_="${name_%%-}"
