@@ -11,7 +11,7 @@
 
 # Assign colors if stdout is a terminal supporting colors
 if test -t 1; then
-  ncolors=$(tput colors)
+  ncolors=$(command -v tput >/dev/null 2>&1 && tput colors)
   if test -n "$ncolors" && test "$ncolors" -ge 8; then
     #bold="$(tput bold)"
     #underline="$(tput smul)"
@@ -155,7 +155,7 @@ function fetch {
 
   # Enter the directory
   pushd "$dir_" > /dev/null
-  info "Changed to directory '$cyan'$PWD'$normal"
+  info "Changed to directory $cyan'$PWD'$normal"
 
   # Do the fetch!
   read scheme_ path_ <<< "$(echo "$1" | sed -rn "s!^(file|github)://(.+)!\1 \2!p")"
@@ -203,17 +203,11 @@ function fetch_file_archive {
   if [ "$lines" == "0" ]; then
     error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
   fi
-  
-  # Determine the depth of folder by counting forward slashes followed by a name
-  if [ "$folder" != "" ]; then
-    depth=$(grep -c "/\w\w*" <<< "$folder")
-    depth=$((depth+1))
-  else
-    depth=0
-  fi
 
   # Extract it
-  tar --strip-components=$depth -xzf "$archive" "$folder"
+  tar -xzf "$archive" "$folder"
+  mv ./"$folder"/* .
+  rm -rf ./"$folder"
 }
 
 function fetch_github {
@@ -224,12 +218,12 @@ function fetch_github {
 
   # Download the archive
   local archive
-  archive=$(mktemp --dry-run --suffix '.tar.gz')
+  archive="$(mktemp -d)/archive.tar.gz"
   curl --silent --show-error --location "https://github.com/$user/$repo/tarball/master" > "$archive"
 
-  # Get the name of the root directory and strip off the trailing slash
+  # Get the name of the root directory
   local root
-  root=$(tar --exclude='*/*' -tf "$archive")
+  root=$(tar -tf "$archive" | head -n 1)
 
   # Fetch from the file archive
   fetch_file_archive "$archive/$root$folder"
