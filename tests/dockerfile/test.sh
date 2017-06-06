@@ -12,4 +12,4 @@ assert_exists .sibyl
 assert_empty "$(ls -1 .sibyl)"
 
 # There should be container running using this image
-assert_unempty "$(docker ps --filter="ancestor=$(sibyl image_id)" --quiet)"
+assert_unempty "$(docker ps --filter="ancestor=$(image_id)" --quiet)"
