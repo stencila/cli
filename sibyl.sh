@@ -493,7 +493,7 @@ function launch {
   local port_used_="maybe"
   while [ "$port_used_" != "" ]; do
       port_=$(( ( RANDOM % 60000 )  + 1025 ))
-      port_used_=$(netstat --listening --all --tcp --numeric | grep ":$port_")
+      port_used_=$(netstat -latn | grep ":$port_")
   done
 
   # Set a timeout
