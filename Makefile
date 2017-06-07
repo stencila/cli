@@ -6,7 +6,7 @@ setup:
 	sudo apt-get install shellcheck
 
 build:
-	docker build . --tag stencila/sibyl
+	cd images/sibyl-server && ./build.sh
 	docker build images/alpha --tag stencila/alpha
 
 run:

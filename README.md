@@ -18,44 +18,78 @@ Sibyl is an evolution of [previous](https://github.com/stencila/stencila/tree/ju
 
 ### Install
 
-Install the Node.js [package](https://www.npmjs.com/package/stencila-sibyl):
+There are different layers to Sibyl, having different levels of functionality and installation complexity.
 
-```sh
-npm install stencila-sibyl
-```
+#### `sibyl.sh` Bash script
 
-The Sibyl Node.js server requires `node` v7.6.0 or higher.
-
-Alternatively, if you only want to use the Bash [script](https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh), download it to somewhere on your `$PATH` and make it executable e.g. on Linux:
+At the heart of Sibyl is the [`sibyl.sh`](https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh) Bash script. You can use it to run most of Sibyls tasks on your local machine. Download it to somewhere on your `$PATH` and make it executable e.g. on Linux:
 
 ```sh
 curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local/bin/sibyl
 chmod 755 ~/.local/bin/sibyl
 ```
 
-The Sibyl Bash script requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/) and [`jq`](https://stedolan.github.io/jq/) and `netstat`.
+`sibyl.sh` requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/), [`jq`](https://stedolan.github.io/jq/) and `netstat` to be installed.
 
-Or, instead of installing everything, you can just run the Docker image:
+Use `sibyl.sh` with a task name and bundle "address" e.g. 
 
 ```sh
-docker run --publish 3000:3000 stencila/sibyl
+sibyl launch github://stencila/test`
 ```
 
-[Actually, right now the `stencila/sibyl` image is not completely functional because it's attempting to use Docker-in-Docker (which needs some configuring,...or avoiding)]
+or, in an existing bundle directory
 
-### Use
+```
+sibyl launch
+```
 
-Sibyl performs several key tasks with bundles:
+Tasks:
 
-- `fetch` : fetches a bundle from some remote or local location
-- `compile` : compiles a Dockerfile based on the contents of the bundle
-- `build` : builds a Docker container image from the Dockerfile for the bundle
-- `check` : checks that the container image has the environment specified
-- `launch` : starts a container from the image with a running Stencila host
+- `fetch`: fetch a bundle from some remote or local location
+- `compile`: `fetch` + compile a Dockerfile based on the contents of the bundle
+- `build`: `compile` + build a Docker image from the Dockerfile
+- `launch`: `build` + start a container from the image
 
-These tasks are implemented in [`sibyl.sh`](sibyl.sh) and can be run at the command line: e.g `sibyl launch github://stencila/test`
+Addresses:
 
-The [`server`](server/server.js) provides a web interface to `sibyl launch`. Start it with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `http://localhost:3000/github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
+- `file:/some/folder`: a bundle at `some/folder` on your filesystem
+- `file:/some/archive.tar.gz`: a bundle in an archive on your filesystem
+- `file:/some/archive.tar.gz/folder`: a bundle within `folder` in an archive on your filesystem
+- `github:/user/repo`: a bundle in a repository on Github
+- `github:/user/repo/folder`: a bundle within `folder` in a repository on Github
+
+
+#### `stencila-sibyl` Node.js package
+
+The Node.js [package](https://www.npmjs.com/package/stencila-sibyl) provides a web interface to `sibyl.sh`:
+
+```sh
+npm install stencila-sibyl
+```
+
+The server requires `node` v7.6.0 or higher as well as the dependencies of `sibyl.sh` (above). The `sibyl.sh` script is installed as part of the package so you don't need to install that separately.
+
+Start the server with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `http://localhost:3000/github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
+
+#### `stencila/sibyl-server` Docker image
+
+Instead of installing Sibyl locally, you can use the `stencila/sibyl-server` Docker image. The Docker daemon is not available in that image so you have to make your local daemon available to it:
+
+```sh
+# Run container bound to the local Docker daemon
+docker run --detach --volume /var/run/docker.sock:/var/run/docker.sock --publish 3000:3000 stencila/sibyl-server
+```
+
+Or, if you want something that is closer to a Kubernetes deployment scenario with a Docker daemon running in it's own container, then:
+
+```sh
+# Create a network for the two containers to talk over
+docker network create sibyl-net
+# Run a Docker-in-Docker (`dind`) container
+docker run --detach --net sibyl-net --name sibyl-docker --rm --privileged docker:dind
+# Run a Sibyl server container with DOCKER_HOST pointing to the Docker daemon running in the `dind` container
+docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --publish 3000:3000 stencila/sibyl-server
+```
 
 ### Containers
 
