@@ -1,2 +1,2 @@
-FROM stencila/alpha
+FROM stencila/iota
 COPY . .

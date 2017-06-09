@@ -1,4 +1,4 @@
-FROM stencila/alpha
+FROM stencila/iota
 COPY . .
 RUN add-apt-repository ppa:fkrull/deadsnakes \
  && apt-get update \

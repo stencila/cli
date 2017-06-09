@@ -2,6 +2,17 @@
 
 ###############################################################################
 # 
+# Configuration options
+# 
+###############################################################################
+
+# The name of the Docker image to use in Docker file `FROM` statements
+# Default is the minimal `iota` image
+: "${SIBYL_FROM:=stencila/iota}"
+
+
+###############################################################################
+# 
 # Output and mocking functions and variables
 # 
 ###############################################################################
@@ -263,7 +274,7 @@ function compile {
   fi
 
   # Base image
-  echo "FROM stencila/alpha" > .sibyl/Dockerfile
+  echo "FROM $SIBYL_FROM" > .sibyl/Dockerfile
 
   # Copy and extract tarball into container
   echo "COPY . ." >> .sibyl/Dockerfile

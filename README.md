@@ -132,7 +132,12 @@ Sibyl creates a Docker container image for each document bundle. All bundle cont
 
 The base images images have Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) as well as a large number of system libraries and packages for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these base images. The [`images`](images) folder contains Dockerfiles that define how each image is built. 
 
-Currently there is only one *stream* of base images: `alpha`. In the future, we may add more base images focussing on specific use cases (e.g. genomics)
+Currently there are two base images:
+
+- `alpha`: a comprehensive image for data analysis in Python, R and/or Node.js
+- `iota`: a minimal image for Sibyl development and testing
+
+In the future, we may add more base images focussing on specific use cases (e.g. genomics)
 
 #### Bundle containers
 
