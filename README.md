@@ -91,7 +91,7 @@ docker run --detach --net sibyl-net --name sibyl-docker --rm --privileged docker
 docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --publish 3000:3000 stencila/sibyl-server
 ```
 
-#### Minikube culster
+#### Minikube cluster
 
 The [`kube`](kube) folder has configurations for deployment on a Kubernetes cluster. To try it out locally, install [`minikube`](https://kubernetes.io/docs/tasks/tools/install-minikube/) and [`kubectrl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and then:
 
@@ -102,7 +102,7 @@ minikube start
 kubectl apply -f kube
 ```
 
-It can take a few minutes to start up but when the `Deployment` is available:
+It can take a few minutes to start up, but when the `Deployment` is available:
 
 ```sh
 $kubectl get deployments
@@ -119,7 +119,7 @@ minikube service sibyl-service --url
 And check that it can launch a container:
 
 ```sh
-curl (minikube service sibyl-service --url)/~launch/github://octocat/spoon-knife
+curl $(minikube service sibyl-service --url)/~launch/github://octocat/spoon-knife
 ```
 
 The Minikube dashboard can be useful if you're getting started with Kubernetes: `minikube dashboard`. If you're developing the Sibyl Docker images and using Minikube it saves a lot of time if you use the Docker daemon inside the Minikube cluster: `eval $(minikube docker-env)`. You should be able to enable the `Ingress` using `minikube addons enable ingress` but it's not really necessary.
