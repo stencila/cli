@@ -80,6 +80,7 @@ RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview'); stencila:::
 
 # Copy environment reflection script
 COPY environ.sh .environ.sh
+RUN chmod +x .environ.sh
 
 # Switch to guest user
 USER guest

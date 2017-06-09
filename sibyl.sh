@@ -481,7 +481,7 @@ function check {
   build "$1"
 
   info 'Running container to check its environment'
-  docker run "$(image_id)" bash .environ.sh > .sibyl/environ.json
+  docker run "$(image_id)" ./.environ.sh > .sibyl/environ.json
 
   # TODO compare .sibyl/environ.json with what was meant to be installed
 }
