@@ -536,7 +536,7 @@ function launch {
   # A unique name for the bundle container
   # Used to route to the container
   local name
-  name="bundle-$(< /dev/urandom tr -dc a-z0-9 | head -c20)"
+  name="bundle-$(( RANDOM ))"
 
   # Command to run the Stencila host
   local cmd
