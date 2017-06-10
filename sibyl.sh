@@ -4,12 +4,23 @@
 # 
 # Configuration options
 # 
+# The defaults below are intended for development using a local
+# Docker engine. For development using Minikube, or for deployment,
+# you'll need to change them.
+# 
 ###############################################################################
 
 # The name of the Docker image to use in Docker file `FROM` statements
 # Default is the minimal `iota` image
 : "${SIBYL_FROM:=stencila/iota}"
 
+# A flag for whether *bundle containers* should be run in a cluster or not
+# Leave empty string to use `docker run ...`, set as "true" to run
+# in a cluster using `kubectl create ...`
+: "${SIBYL_CLUSTER:=}"
+
+# The private registry for pushing and pulling bundle images
+: "${SIBYL_REGISTRY:=}"
 
 ###############################################################################
 # 
@@ -434,22 +445,26 @@ EOL
 function build {
   fetch "$1" "continue"
 
-  local image_id_
-  image_id_=$(image_id)
+  local image_id
+  image_id=$(image_id)
+
+  image_repo=$(image_repo)
+  image_tag=$(image_tag)
 
   # Is the image aleady built?
-  local _image_exists
+  local image_exists
   # Is a Docker registry being used?
-  if [ -z "$SIBYL_REGISTRY" ]; then
+  if [ "$SIBYL_REGISTRY" == "" ]; then
     # No, check images locally
-    _image_exists=$(docker images --quiet "$image_id_")
+    image_exists=$(docker images --quiet "$image_id")
   else
     # Yes, check the registry
-    # TODO
-    error "Not yet implemented"
+    if [ "$(curl -I -s -o /dev/null -w "%{http_code}" "http://$SIBYL_REGISTRY/v2/$image_repo/manifests/$image_tag")" == "200" ]; then
+      image_exists="true"
+    fi
   fi
-  if [ "$_image_exists" != "" ]; then
-    info "Image already built: $cyan'$image_id_'$normal"
+  if [ "$image_exists" != "" ]; then
+    info "Image already built: $cyan'$image_id'$normal"
     return 
   fi
 
@@ -462,9 +477,21 @@ function build {
     fi
   done
 
+  local image_url
+  if [ "$SIBYL_REGISTRY" == "" ]; then
+    image_url=$image_id
+  else
+    image_url=$SIBYL_REGISTRY/$image_id
+  fi
+
   # Build the Docker image
-  info "Building image: $cyan'$image_id_'$normal"
-  docker build --tag "$image_id_" . | indent
+  info "Building image: $cyan'$image_url'$normal"
+  docker build --tag "$image_url" . | indent
+
+  if [ "$SIBYL_REGISTRY" != "" ]; then
+    # Push to the registry
+    docker push "$image_url"
+  fi
 
   # Remove any symlinks created
   find . -type l -delete
@@ -496,26 +523,83 @@ function check {
 function launch {
   build "$1"
 
-  local image_id_
-  image_id_=$(image_id)
+  local image_id
+  image_id=$(image_id)
 
-  # Find a port for container to publish to localhost
-  local port_
-  local port_used_="maybe"
-  while [ "$port_used_" != "" ]; do
-      port_=$(( ( RANDOM % 60000 )  + 1025 ))
-      port_used_=$(netstat -latn | grep ":$port_")
-  done
+  local image_url
+  if [ "$SIBYL_REGISTRY" == "" ]; then
+    image_url=$image_id
+  else
+    image_url=$SIBYL_REGISTRY/$image_id
+  fi
 
-  # Set a timeout
-  local timeout_=3600
+  # A unique name for the bundle container
+  # Used to route to the container
+  local name
+  name="bundle-$(< /dev/urandom tr -dc a-z0-9 | head -c20)"
 
-  info "Starting container on port $cyan$port_$normal with timeout $cyan$timeout_$normal seconds"
-  local id_
-  id_=$(docker run --publish $port_:2000 --detach "$image_id_" node -e "require('stencila-node').run('0.0.0.0', 2000, $timeout_)")
-  info "Container $cyan$id_$normal launched"
+  # Command to run the Stencila host
+  local cmd
+  cmd="require('stencila-node').run('0.0.0.0', 2000, 3600)"
 
-  echo -e "${magenta}GOTO${normal} $port_"
+  # We'll get IP and/or port so that the user can be redirected
+  # to the running bundle container
+  local ip
+  local port
+  
+  # Run a container using...
+  if [ "$SIBYL_CLUSTER" == "" ]; then
+    # ...the local Docker engine
+
+    # IP is localhost
+    ip="127.0.0.1"
+    # Port is random available port
+    local port_used="maybe"
+    while [ "$port_used" != "" ]; do
+        port=$(( ( RANDOM % 60000 )  + 1025 ))
+        port_used=$(netstat -latn | grep ":$port")
+    done
+
+    info "Launching container name:$cyan$name$normal port:$cyan$port$normal"
+    docker run --name "$name" --publish "$port:2000" --detach "$image_url" node -e "$cmd" | indent
+
+  else
+    # ...the Kubernetes cluster
+    
+    info "Launching pod name:$cyan$name$normal"
+    cat << EOF | kubectl create -f -
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: $name
+spec:
+  containers:
+    - name: bundle-container
+      image: $image_url
+      args: ["node", "-e", "$cmd"]
+      ports:
+        - containerPort: 2000
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "250m"
+        limits:
+          memory: "256Mi"
+          cpu: "500m"
+  restartPolicy: Never
+EOF
+
+    # Get the container's IP (to be used for routeing)
+    ip=$(kubectl get pods -o yaml | sed -rn "s!\s*podIP:\s(.*)!\1!p")
+    port="80"
+
+    # TODO IP should be a public IP and we maintain a routing table to
+    # the internal IP
+
+  fi
+
+  echo -e "${magenta}GOTO${normal} http://$ip:$port/"
 }
 
 
