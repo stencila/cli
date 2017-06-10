@@ -59,6 +59,14 @@ Addresses:
 - `github:/user/repo/folder`: a bundle within `folder` in a repository on Github
 
 
+To get closer to a production scenario you can set up and use a local private Docker registy:
+
+```sh
+docker run --detach --net sibyl-net --name sibyl-registry --rm --publish 5000:5000 registry:2
+SIBYL_REGISTRY=localhost:5000 sibyl launch
+```
+
+
 #### `stencila-sibyl` Node.js package
 
 The Node.js [package](https://www.npmjs.com/package/stencila-sibyl) provides a web interface to `sibyl.sh`:
@@ -85,45 +93,61 @@ Or, if you want something that is closer to a Kubernetes deployment scenario wit
 ```sh
 # Create a network for the two containers to talk over
 docker network create sibyl-net
-# Run a Docker-in-Docker (`dind`) container
+# Run a Docker-in-Docker (`dind`) container to
 docker run --detach --net sibyl-net --name sibyl-docker --rm --privileged docker:dind
 # Run a Sibyl server container with DOCKER_HOST pointing to the Docker daemon running in the `dind` container
 docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --publish 3000:3000 stencila/sibyl-server
 ```
 
+
 #### Minikube cluster
 
-The [`deploy`](deploy) folder has configurations for deployment on a Kubernetes cluster. To try it out locally, install [`minikube`](https://kubernetes.io/docs/tasks/tools/install-minikube/) and [`kubectrl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and then:
+The [`deploy`](deploy) folder has configurations for deployment on a Minikube cluster. To try it out locally, install [`minikube`](https://kubernetes.io/docs/tasks/tools/install-minikube/) and [`kubectrl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and then:
 
 ```sh
-# Start up Minikube cluster
+# Start the Minikube cluster
 minikube start
 # Deploy Sibyl to the cluster
-make deploy
+make deploy-minikube
 ```
 
 It can take a few minutes to start up, but when the `Deployment` is available:
 
 ```sh
-$kubectl get deployments
+kubectl get deployments
+
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-sibyl-deployment   2         2         2            2           1h
+sibyl              1         1         1            1           1h
 ```
 
-You can get then get the `Service` URL: 
+You can then get the `sibyl-server-service` URL: 
 
 ```sh
-minikube service sibyl-service --url
+minikube service sibyl-server --url
 ```
 
 And check that it can launch a container:
 
 ```sh
-curl $(minikube service sibyl-service --url)/~launch/github://octocat/spoon-knife
+curl $(minikube service sibyl-server --url)/~launch/github://octocat/spoon-knife
 ```
 
-The Minikube dashboard can be useful if you're getting started with Kubernetes: `minikube dashboard`. If you're developing the Sibyl Docker images and using Minikube it saves a lot of time if you use the Docker daemon inside the Minikube cluster: `eval $(minikube docker-env)`. You should be able to enable the `Ingress` using `minikube addons enable ingress` but it's not really necessary.
+The Minikube dashboard can be useful: `minikube dashboard`. To use the `sibyl-ingress` you could try `minikube addons enable ingress`; but it's not really necessary because with the above approach you can talk directly to the `Services`.
 
+If you're developing the Docker images you can save time (and bandwidth) by not pushing/pulling images to/from the Docker Hub registry. To do that configure your local Docker client to use one of the Docker engines running inside the Minikube cluster:
+
+- if you're building the base images in the `images` folder, or if you're running `sibyl.sh` locally and want to build the bundle images inside the cluster, then use the Docker daemon in the `sibyl-docker` container of the `sibyl-deployment`:
+
+```sh
+export DOCKER_HOST=$(minikube service sibyl-docker --format "tcp://{{.IP}}:{{.Port}}")
+unset DOCKER_TLS_VERIFY
+```
+
+- if you're building the images in the `deploy` folder e.g. `sibyl-server`, including if you are modifying any code copied into thos images e.g. `server/server.js`, then use the Docker daemon in the cluster Kubelet: 
+
+```sh
+eval $(minikube docker-env)
+```
 
 ### Containers
 

@@ -11,7 +11,7 @@ build:
 
 push:
 	docker push stencila/alpha
-    docker push stencila/iota
+	docker push stencila/iota
 
 run:
 	npm start
@@ -25,7 +25,6 @@ test:
 cover:
 	cd tests && kcov --include-path=../sibyl.sh ../coverage run.sh
 
-deploy:
-	cd deploy/sibyl-server && ./build.sh
-	kubectl apply -f deploy
-.PHONY: deploy
+deploy-minikube:
+	eval $$(minikube docker-env) && cd deploy/sibyl-server && . ./build.sh
+	kubectl apply -f deploy/minikube.yaml
