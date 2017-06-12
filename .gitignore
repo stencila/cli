@@ -1,6 +1,7 @@
+build
+bundles
 coverage
 node_modules
-bundles
 
 # Ignore files generated in tests but not `.expected` files
 tests/*/.sibyl/*

@@ -5,9 +5,19 @@ setup:
 	bash kcov-install.sh
 	sudo apt-get install shellcheck
 
+docs-build:
+	npm run docs-build
+
+docs-serve:
+	cd build/docs && python -m SimpleHTTPServer 4000
+
+docs-publish:
+	npm run docs-publish
+
 build:
 	docker build images/alpha --tag stencila/alpha
 	docker build images/iota --tag stencila/iota
+.PHONY: build
 
 push:
 	docker push stencila/alpha
