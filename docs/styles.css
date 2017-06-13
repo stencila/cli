@@ -1,3 +1,38 @@
+._571b6797 {
+  padding-top: 10px;
+}
+
+@media (min-width: 600px) {
+  ._571b6797 {
+    padding-top: 30px;
+  }
+}
+
+@media (min-width: 900px) {
+  ._571b6797 {
+    padding-top: 30px;
+  }
+}
+
 .minidocs-contents .h1:before {
   content: '';
+}
+
+.minidocs-contents a.content-link {
+  padding: 2px 1px 2px 3px;
+}
+
+.minidocs-contents a.content-link.active {
+  border-left: 3px solid hsl(90, 100%, 55%);
+}
+
+.markdown-body {
+  font-size: 1.05em;
+  color: #333;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  color: #555;
 }

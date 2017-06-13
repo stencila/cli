@@ -149,46 +149,25 @@ unset DOCKER_TLS_VERIFY
 eval $(minikube docker-env)
 ```
 
-### Containers
 
-Sibyl creates a Docker container image for each document bundle. All bundle container images are based on one of Sibyl's base container images. 
 
-#### Base containers
+### Contribute a new container image
 
-The base images images have Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) as well as a large number of system libraries and packages for scientific computing. They aim to provide a computing environment that meets the needs of 95% of Stencila documents. We intend to build and publish daily versions of these base images. The [`images`](images) folder contains Dockerfiles that define how each image is built. 
 
-Currently there are two base images:
+Create a symlink to the `README.md` inside the `docs/images` folder:
 
-- `alpha`: a comprehensive image for data analysis in Python, R and/or Node.js
-- `iota`: a minimal image for Sibyl development and testing
+```sh
+cd docs/images
+ln -s ../../images/omega/README.md omega.md
+```
 
-In the future, we may add more base images focussing on specific use cases (e.g. genomics)
-
-#### Bundle containers
-
-You can customize a bundle container by specifying one or more requirements files in your bundle:
-
-- `requirements.txt` for specifying a Python version and/or package versions
-- `r-requires.txt` for specifying a R version and/or package versions
-- `package.json` for specifying a Node.js version and/or package versions
-- `Dockerfile`for completely customizing the container (but must use a Stencila image as a base e.g. `FROM stencila/alpha`)
-
-The other use case for custom containers is where users want a container that is as close as possible to their local environment. It is not currently implemented, but we're planning on adding this "make a container like my local environment" functionality. The Stencila packages for R, Python and Node.js provide a `environ` function which produce a description of the language runtime and the installed package versions. For example, in R, the command `stencila:::envrion()` produces the JSON below which could be used to build a container with the right versions of R and R packages.
+Then add an entry in the table of contents: `docs/contents.json` e.g.
 
 ```json
-{
-  "version": "3.3.2",
-  "codename": "Sincere Pumpkin Patch",
-  "date": "2016-10-31",
-  "platform": "x86_64-pc-linux-gnu",
-  "packages": {
-    "actuar": "2.0-0",
-    "assertthat": "0.1",
-    "babynames": "0.2.1",
-    "backports": "1.0.5",
-    "base": "3.3.2",
-    "base64enc": "0.1-3",
-    "BH": "1.62.0-1",
-    "bitops": "1.0-6",
-...
+"images": {
+  "alpha": "images/alpha.md",
+  ...
+  "omega": "images/omega.md"
+}
 ```
+

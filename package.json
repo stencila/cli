@@ -3,7 +3,7 @@
   "version": "0.26.0",
   "description": "Stencila in containers",
   "scripts": {
-    "docs-build": "minidocs docs/ --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
+    "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
     "start": "node server/server.js"

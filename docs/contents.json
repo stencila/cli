@@ -1,5 +1,31 @@
 {
-  "overview": {
-    "about": "about.md"
+  "Overview": {
+    "Intro": "intro.md",
+    "Concepts": "concepts.md",
+    "FAQ": "faq.md"
+  },
+  "Schemes": {
+    "bitbucket://": "schemes/bitbucket.md",
+    "dat://": "schemes/dat.md",
+    "dropbox://": "schemes/dropbox.md",
+    "file://": "schemes/file.md",
+    "github://": "schemes/github.md",
+    "gitlab://": "schemes/gitlab.md",
+    "http://": "schemes/http.md"
+  },
+  "Images": {
+    "alpha": "images/alpha.md",
+    "iota": "images/iota.md",
+    "Custom": "images/custom.md"
+  },
+  "Languages": {
+    "Node.js": "langs/node.md",
+    "Python": "langs/python.md",
+    "R": "langs/r.md"
+  },
+  "Hooks": {
+    "Github": "hooks/github-hook.md",
+    "Gitlab": "hooks/gitlab-hook.md",
+    "Bitbucket": "hooks/bitbucket-hook.md"
   }
 }
