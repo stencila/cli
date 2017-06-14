@@ -2,7 +2,7 @@
 
 You can "pin" the version of the base image. This can be useful if you want to make sure that the versions of language packages and other software remains the same. In `image.txt` specify the name and version of the base image e.g.
 
-    alpha@2017-06-14
+    alpha==2017-06-14
 
 > **This feature is not yet implemented!**
 >
