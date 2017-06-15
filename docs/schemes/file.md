@@ -34,4 +34,4 @@ sibyl launch file:///some/folder/
 
 ## Details
 
-Sibyl fetches a Github hosted bundle by downloading and extracting the tarball from `https://github.com/{user}/{repo}/tarball/master`. If you're using Sibyl locally, you'll need to have the `curl` and `tar` installed.
+Sibyl fetches a Github hosted bundle by downloading and extracting the tarball from `https://github.com/{user}/{repo}/tarball/master`. If you're using Sibyl locally, you'll need to have `curl` and `tar` installed.

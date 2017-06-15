@@ -4,7 +4,7 @@ Add a [`requirements.txt`](https://docs.npmjs.com/files/package.json) to your bu
 
 e.g.
 
-```text
+```
 # python==3
 
 numpy==1.12.1

@@ -4,7 +4,7 @@ Add a [`r-requires.txt`](https://docs.npmjs.com/files/package.json) to your bund
 
 e.g.
 
-```text
+```
 # R==3.2.5
 
 ggplot2==1.0.1

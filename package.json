@@ -6,7 +6,7 @@
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
-    "start": "node server/server.js"
+    "start": "nodemon server/server.js | pino-colada"
   },
   "bin": {
     "sibyl": "./sibyl.sh"
@@ -22,12 +22,17 @@
   },
   "homepage": "https://github.com/stencila/sibyl#readme",
   "dependencies": {
+    "end-of-stream": "^1.4.0",
     "koa": "^2.2.0",
     "koa-router": "^7.2.0",
-    "koa-send": "^4.1.0"
+    "koa-send": "^4.1.0",
+    "log-http": "^1.0.0",
+    "pino": "^4.6.0"
   },
   "devDependencies": {
     "minidocs": "^4.2.3",
+    "nodemon": "^1.11.0",
+    "pino-colada": "^1.4.0",
     "standard": "*",
     "surge": "^0.19.0"
   }

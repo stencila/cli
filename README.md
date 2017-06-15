@@ -29,7 +29,7 @@ curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local
 chmod 755 ~/.local/bin/sibyl
 ```
 
-`sibyl.sh` requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/), [`jq`](https://stedolan.github.io/jq/) and `netstat` to be installed.
+`sibyl.sh` requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/), [`jq`](https://stedolan.github.io/jq/) and `netstat` to be installed. On older versions of Mac OS which don't have the `sed -r` you may have to install `gsed` using `brew install coreutils`.
 
 Use `sibyl.sh` with a task name and bundle "address" e.g. 
 
