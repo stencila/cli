@@ -6,7 +6,7 @@
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
-    "start": "nodemon server/server.js | pino-colada"
+    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon server/server.js | merry"
   },
   "bin": {
     "sibyl": "./sibyl.sh"
@@ -24,16 +24,13 @@
   "dependencies": {
     "end-of-stream": "^1.4.0",
     "jsonwebtoken": "^7.4.1",
-    "koa": "^2.2.0",
-    "koa-router": "^7.2.0",
-    "koa-send": "^4.1.0",
-    "log-http": "^1.0.0",
-    "pino": "^4.6.0"
+    "merry": "^5.2.0",
+    "pump": "^1.0.2",
+    "send": "^0.15.2"
   },
   "devDependencies": {
     "minidocs": "^4.2.3",
     "nodemon": "^1.11.0",
-    "pino-colada": "^1.4.0",
     "standard": "*",
     "surge": "^0.19.0"
   }
