@@ -607,7 +607,7 @@ EOF
 
   fi
 
-  echo -e "${magenta}GOTO${normal} http://$ip:$port/"
+  echo -e "${magenta}GOTO${normal} http://$ip:$port"
 }
 
 
