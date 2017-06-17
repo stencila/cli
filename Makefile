@@ -14,14 +14,8 @@ docs-serve:
 docs-publish:
 	npm run docs-publish
 
-build:
-	docker build images/alpha --tag stencila/alpha
-	docker build images/iota --tag stencila/iota
-.PHONY: build
-
-push:
-	docker push stencila/alpha
-	docker push stencila/iota
+image-%:
+	docker build images/$* --tag stencila/$*
 
 run:
 	npm start
