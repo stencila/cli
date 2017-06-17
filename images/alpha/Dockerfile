@@ -73,10 +73,9 @@ RUN Rscript -e "\
 
 # Install Stencila packages
 # Currently here near the end for easy updating during development
-
-RUN npm install https://github.com/stencila/node/tarball/0.27-preview && node -e "require('stencila-node').install()"
-RUN pip install https://github.com/stencila/py/tarball/0.27-preview && python -c "import stencila; stencila.install()"
-RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview'); stencila:::install();"
+RUN npm install https://github.com/stencila/node/tarball/0.27-preview
+RUN pip install https://github.com/stencila/py/tarball/0.27-preview
+RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview')"
 
 # Copy environment reflection script
 COPY environ.sh .environ.sh
@@ -84,3 +83,9 @@ RUN chmod +x .environ.sh
 
 # Switch to guest user
 USER guest
+
+# Install Stencila packages as guest user so that the
+# host files are in home directory
+RUN node -e "require('stencila-node').install()"
+RUN python -c "import stencila; stencila.install()"
+RUN Rscript -e "stencila:::install()"
