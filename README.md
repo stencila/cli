@@ -111,7 +111,18 @@ minikube start
 make deploy-minikube
 ```
 
-It can take a few minutes to start up, but when the `Deployment` is available:
+The minikube deployment provides a Docker registry service. Docker treats registries at `localhost:5000` in a special way, ignoring any TLS requirements that are usually in place. To make this work two port forwarding commands are necessary. The first makes the registry available on your localhost:
+
+```sh
+kubectl port-forward $(kubectl get pods | grep sibyl | awk '{print $1;}') 5000:5000 &
+```
+
+The second port forward, or rather reverse proxy, makes `localhost:5000` on the minikube virtual machine bounce through to the sibyl registry:
+```sh
+ssh -i ~/.minikube/machines/minikube/id_rsa -f -N -R 5000:localhost:5000 docker@$(minikube ip)
+```
+
+Check the `Deployment` is ready:
 
 ```sh
 kubectl get deployments
