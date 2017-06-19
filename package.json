@@ -3,10 +3,12 @@
   "version": "0.26.0",
   "description": "Stencila in containers",
   "scripts": {
+    "build": "bankai build client/index.js --verbose",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
-    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon server/server.js | merry"
+    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ server/server.js | merry",
+    "watch": "bankai build --watch client/index.js dist/"
   },
   "bin": {
     "sibyl": "./sibyl.sh"
@@ -31,6 +33,7 @@
     "merry": "^5.2.0",
     "pump": "^1.0.2",
     "send": "^0.15.2",
+    "sheetify": "^6.1.0",
     "tachyons": "^4.7.4"
   },
   "devDependencies": {
