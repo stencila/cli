@@ -156,14 +156,16 @@ function image_id {
 ###############################################################################
 #
 # Fetch a bundle from an address:
-# 
+#
 # - `file://parent/folder` : a folder on the local filesystem
-# 
-# - `file://path/archive(.zip|tar.gz)/folder` : a folder within a file 
-#    archive on the local filesystem 
-# 
-# - `github://user/repo/parent/folder` :  a folder in a Github repo
-# 
+#
+# - `file://path/archive(.zip|tar.gz)/folder` : a folder within a file
+#    archive on the local filesystem
+#
+# - `github://user/repo/parent/folder` : a folder in a Github repo
+#
+# - `dat://key` : a Dat repo
+#
 ###############################################################################
 
 function fetch {
@@ -186,11 +188,12 @@ function fetch {
   info "Changed to directory $cyan'$PWD'$normal"
 
   # Do the fetch!
-  read scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github)://(.+)!\1 \2!p")"
+  read scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github|dat)://(.+)!\1 \2!p")"
   info "Fetching scheme '$cyan$scheme_$normal' with path '$cyan$path_$normal'"
   case $scheme_ in
     file)   fetch_file "$path_" ;;
-    github) fetch_github "$path_" ;;      
+    github) fetch_github "$path_" ;;
+    dat)    fetch_dat "$path_" ;;
     *)      error "Unknown scheme: $scheme_" ;;
   esac
 
@@ -269,10 +272,19 @@ function fetch_github {
   rm "$archive"
 }
 
+
+function fetch_dat {
+  info "Fetching Dat repo '${cyan}$1{normal}''"
+  info "Running '${cyan}dat $1 . --exit{normal}''"
+
+  # Download the archive
+  dat $1 . --exit
+}
+
 ###############################################################################
 #
 # Compile a Dockerfile for the bundle
-# 
+#
 ###############################################################################
 
 function compile {
