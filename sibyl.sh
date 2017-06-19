@@ -50,17 +50,9 @@ if test -t 1; then
   fi
 fi
 
-# Use coreutils version of "sed" if available.
-gsed --help 2&> /dev/null
-if [ $? == 0 ]; then
-  sed="gsed"
-else
-  sed="sed"
-fi
-
 # Indent lines
 function indent {
-  "$sed" 's/^/    /'
+  sed 's/^/    /'
 }
 
 # Print a STEP to terminal
@@ -186,7 +178,7 @@ function fetch {
   info "Changed to directory $cyan'$PWD'$normal"
 
   # Do the fetch!
-  read scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github)://(.+)!\1 \2!p")"
+  read scheme_ path_ <<< "$(echo "$1" | sed -En "s!^(file|github)://(.+)!\1 \2!p")"
   info "Fetching scheme '$cyan$scheme_$normal' with path '$cyan$path_$normal'"
   case $scheme_ in
     file)   fetch_file "$path_" ;;
@@ -227,7 +219,7 @@ function fetch_file_archive {
   # Get the archive file path and folder to extract from the address path
   local archive
   local folder
-  read archive folder <<< "$(echo "$path" | "$sed" -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
+  read archive folder <<< "$(echo "$path" | sed -E "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
   info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
   # Extract into a temporary dir, move contents (including dot files)
@@ -250,7 +242,7 @@ function fetch_file_archive {
 function fetch_github {
   path=$1 # Address path i.e. repo/user/folder
 
-  read user repo folder <<< "$(echo "$path" | "$sed" -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
+  read user repo folder <<< "$(echo "$path" | sed -E "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
 
   # Download the archive
@@ -342,7 +334,7 @@ EOL
     # they are heavier solutions
     info "Using Node.js ${cyan}$version${normal}"
 
-    major=$(echo "$version" | "$sed" -rn 's/([0-9]+)\..+/\1/p')
+    major=$(echo "$version" | sed -En 's/([0-9]+)\..+/\1/p')
 
     cat >> .sibyl/Dockerfile << EOL
 RUN curl -s "https://deb.nodesource.com/node_$major.x/pool/main/n/nodejs/nodejs_$version-1nodesource1~xenial1_amd64.deb" > node.deb \\
@@ -354,7 +346,7 @@ EOL
 
   # Parse dependencies in package.json into lines of name@version which can be xarged into
   # a npm global install
-  jq -r '.dependencies' package.json | "$sed" -rn 's/  "([^"]+)": "([^"]+)",?/\1@\2/p' > .sibyl/node-requires.txt
+  jq -r '.dependencies' package.json | sed -En 's/  "([^"]+)": "([^"]+)",?/\1@\2/p' > .sibyl/node-requires.txt
 
   cat >> .sibyl/Dockerfile << EOL
 RUN cat ".sibyl/node-requires.txt" | xargs npm install
@@ -368,8 +360,8 @@ function install_python {
   # Get the Python version from requirements file e.g.
   #   # python==2.7
   # Note that any patch number in the version will be ignored
-  version=$("$sed" -rn 's/# *(P|p)ython==([0-9](\.[0-9]+)?).*/\2/p' requirements.txt)
-  major=$(echo "$version" | "$sed" -rn 's/([0-9]+).*/\1/p')
+  version=$(sed -En 's/# *(P|p)ython==([0-9](\.[0-9]+)?).*/\2/p' requirements.txt)
+  major=$(echo "$version" | sed -En 's/([0-9]+).*/\1/p')
 
   # Install Python and pip
   if [ "$version" == "" ]; then
@@ -411,7 +403,7 @@ function install_r {
 
   # Get the R version from requirements file e.g.
   #   # R==3.1.1
-  version=$("$sed" -rn 's/# *(R|r)==([0-9]\.[0-9]+\.[0-9]+)/\2/p' r-requires.txt)
+  version=$(sed -En 's/# *(R|r)==([0-9]\.[0-9]+\.[0-9]+)/\2/p' r-requires.txt)
 
   # Install R
   if [ "$version" != "" ]; then
@@ -434,7 +426,7 @@ EOL
   cat > .sibyl/r-requires.R << EOL
 options(repos=structure(c(CRAN='https://cran.rstudio.com')))
 install.packages('devtools')
-$("$sed" -rn "s/^([a-zA-Z0-9]+)==(.*)/devtools::install_version('\1', '\2')/p" r-requires.txt)
+$(sed -En "s/^([a-zA-Z0-9]+)==(.*)/devtools::install_version('\1', '\2')/p" r-requires.txt)
 devtools::install_github('stencila/r')
 stencila:::install()
 EOL
@@ -599,7 +591,7 @@ spec:
 EOF
 
     # Get the container's IP (to be used for routeing)
-    ip=$(kubectl get pods -o yaml | "$sed" -rn "s!\s*podIP:\s(.*)!\1!p")
+    ip=$(kubectl get pods -o yaml | sed -En "s!\s*podIP:\s(.*)!\1!p")
     port="80"
 
     # TODO IP should be a public IP and we maintain a routing table to
