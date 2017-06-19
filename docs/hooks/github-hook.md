@@ -1,6 +1,6 @@
 # Github hook
 
-[Github](https://github.com/) is Git repository hosting service. The Github [hooks](concepts#hooks) allows 
+[Github](https://github.com/) is a Git repository hosting service. The Github [hooks](concepts#hooks) allows 
 
 > **This hook is not yet implemented!**
 >

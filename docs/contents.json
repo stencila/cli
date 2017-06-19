@@ -16,7 +16,8 @@
   "Images": {
     "alpha": "images/alpha.md",
     "iota": "images/iota.md",
-    "Custom": "images/custom.md"
+    "Customize": "images/customize-image.md",
+    "Contribute": "images/contribute-image.md"
   },
   "Languages": {
     "Node.js": "langs/node.md",
