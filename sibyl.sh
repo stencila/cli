@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 ###############################################################################
-# 
+#
 # Configuration options
-# 
+#
 # The defaults below are intended for development using a local
 # Docker engine. For development using Minikube, or for deployment,
 # you'll need to change them.
-# 
+#
 ###############################################################################
 
 # The name of the Docker image to use in Docker file `FROM` statements
@@ -23,9 +23,9 @@
 : "${SIBYL_REGISTRY:=}"
 
 ###############################################################################
-# 
+#
 # Output and mocking functions and variables
-# 
+#
 ###############################################################################
 
 # Exclude from coverage
@@ -101,7 +101,7 @@ function unmock {
 ###############################################################################
 #
 # Bundle inspection
-# 
+#
 ###############################################################################
 
 # Translate a bundle address into a unique bundle name that
@@ -109,7 +109,7 @@ function unmock {
 function bundle_name {
   if [ "$1" != "" ]; then
     local name_
-    # Translate upper case to lower case, and 
+    # Translate upper case to lower case, and
     # any non-alpha-numerics to a dash
     # This used to include `iconv -t ascii//TRANSLIT` to translate non-ASCII
     # chars but that is not available in [Alpine Linux](https://github.com/gliderlabs/docker-alpine/issues/216)
@@ -136,7 +136,7 @@ function bundle_sha {
 }
 
 # Get the Docker image repository name and tag for the current bundle
-# In Docker a "repository" is any group of builds of an image with the same 
+# In Docker a "repository" is any group of builds of an image with the same
 # name, and potentially multiple tags (not to be confused with a Docker "registry")
 # See https://docs.docker.com/registry/spec/api/#overview for rules for repository
 # names
@@ -395,7 +395,7 @@ RUN apt-get update \\
 EOL
 
   else
-  
+
     info "Installing Python ${cyan}$version${normal}"
 
     cat >> .sibyl/Dockerfile << EOL
@@ -459,7 +459,7 @@ EOL
 ###############################################################################
 #
 # Build a container image for a bundle
-# 
+#
 ###############################################################################
 
 function build {
@@ -485,7 +485,7 @@ function build {
   fi
   if [ "$image_exists" != "" ]; then
     info "Image already built: $cyan'$image_id'$normal"
-    return 
+    return
   fi
 
   compile
@@ -521,7 +521,7 @@ function build {
 ###############################################################################
 #
 # Check the container has the expected environment
-# 
+#
 ###############################################################################
 
 function check {
@@ -537,7 +537,7 @@ function check {
 ###############################################################################
 #
 # Launch a container
-# 
+#
 ###############################################################################
 
 function launch {
@@ -566,7 +566,7 @@ function launch {
   # to the running bundle container
   local ip
   local port
-  
+
   # Run a container using...
   if [ "$SIBYL_CLUSTER" == "" ]; then
     # ...the local Docker engine
@@ -585,7 +585,7 @@ function launch {
 
   else
     # ...the Kubernetes cluster
-    
+
     info "Launching pod name:$cyan$name$normal"
     cat << EOF | kubectl create -f -
 
@@ -626,7 +626,7 @@ EOF
 ###############################################################################
 #
 # Main entry point
-# 
+#
 ###############################################################################
 # Exclude from coverage
 # LCOV_EXCL_START
@@ -658,7 +658,7 @@ if [ "${BASH_SOURCE[0]}" == "$0" ]; then
       build) build "$2" ;;
       check) check "$2" ;;
       launch) launch "$2" ;;
-        
+
       *)
         error "Unknown task: $1"
         ;;
