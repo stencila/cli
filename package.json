@@ -22,12 +22,16 @@
   },
   "homepage": "https://github.com/stencila/sibyl#readme",
   "dependencies": {
+    "bankai": "^8.0.0",
+    "choo": "^5.6.2",
+    "choo-log": "^6.1.2",
     "cookie": "^0.3.1",
     "end-of-stream": "^1.4.0",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
     "pump": "^1.0.2",
-    "send": "^0.15.2"
+    "send": "^0.15.2",
+    "tachyons": "^4.7.4"
   },
   "devDependencies": {
     "minidocs": "^4.2.3",
