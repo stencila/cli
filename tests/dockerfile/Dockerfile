@@ -1,3 +1,3 @@
 # A custom Dockerfile provided by the user
 
-FROM stencila/alpha
+FROM stencila/iota
