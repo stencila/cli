@@ -7,7 +7,8 @@
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
-    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ server/server.js | merry",
+    "serve": "node server/server.js | merry",
+    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ --ignore bundles/ server/server.js | merry",
     "watch": "bankai build --watch client/index.js dist/"
   },
   "bin": {

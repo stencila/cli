@@ -85,7 +85,7 @@ Instead of installing Sibyl locally, you can use the `stencila/sibyl-server` Doc
 
 ```sh
 # Run container bound to the local Docker daemon
-docker run --detach --volume /var/run/docker.sock:/var/run/docker.sock --publish 3000:3000 stencila/sibyl-server
+docker run --detach --volume /var/run/docker.sock:/var/run/docker.sock --env TOKEN_SECRET=donttell --publish 3000:3000 stencila/sibyl-server
 ```
 
 Or, if you want something that is closer to a Kubernetes deployment scenario with a Docker daemon running in it's own container, then:
@@ -96,7 +96,7 @@ docker network create sibyl-net
 # Run a Docker-in-Docker (`dind`) container to
 docker run --detach --net sibyl-net --name sibyl-docker --rm --privileged docker:dind
 # Run a Sibyl server container with DOCKER_HOST pointing to the Docker daemon running in the `dind` container
-docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --publish 3000:3000 stencila/sibyl-server
+docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --env TOKEN_SECRET=donttell--publish 3000:3000 stencila/sibyl-server
 ```
 
 
