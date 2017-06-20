@@ -274,11 +274,11 @@ function fetch_github {
 
 
 function fetch_dat {
-  info "Fetching Dat repo '${cyan}$1{normal}''"
-  info "Running '${cyan}dat $1 . --exit{normal}''"
+  info "Fetching Dat repo '${cyan}$1${normal}'"
+  info "Running '${cyan}dat $1 . --exit${normal}'"
 
   # Download the archive
-  dat "$1" . --exit
+  dat "$1" . --exit | indent
 }
 
 ###############################################################################
