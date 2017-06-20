@@ -278,7 +278,7 @@ function fetch_dat {
   info "Running '${cyan}dat $1 . --exit{normal}''"
 
   # Download the archive
-  dat $1 . --exit
+  dat "$1" . --exit
 }
 
 ###############################################################################
