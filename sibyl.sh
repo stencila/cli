@@ -142,7 +142,7 @@ function bundle_sha {
 # names
 function image_repo {
   if [ "$SIBYL_REGISTRY" == "" ]; then
-    bundle_name ""
+    echo "sibyl-$(bundle_name "")"
   else
     echo "$SIBYL_REGISTRY/$(bundle_name "")"
   fi
@@ -559,10 +559,9 @@ function launch {
   local image_id
   image_id=$(image_id)
 
-  # A unique name for the bundle container
-  # Used to route to the container
+  # A unique name for the session container
   local name
-  name="bundle-$(( RANDOM ))"
+  name="sibyl-session-$(( RANDOM ))"
 
   # Command to run the Stencila host
   local cmd
@@ -586,13 +585,13 @@ function launch {
         port_used=$(netstat -latn | grep ":$port")
     done
 
-    info "Launching container name:$cyan$name$normal port:$cyan$port$normal"
+    info "Launching session name:$cyan$name$normal port:$cyan$port$normal"
     docker run --name "$name" --publish "$port:2000" --detach "$image_id" node -e "$cmd" | indent
 
   else
     # ...the Kubernetes cluster
 
-    info "Launching pod name:$cyan$name$normal"
+    info "Launching session name:$cyan$name$normal"
     cat << EOF | kubectl create -f -
 
 kind: Pod
@@ -603,7 +602,8 @@ spec:
   containers:
     - name: bundle-container
       image: $image_id
-      args: ["node", "-e", "$cmd"]
+      command: ["node"]
+      args: ["-e", "$cmd"]
       ports:
         - containerPort: 2000
       resources:
@@ -616,9 +616,15 @@ spec:
   restartPolicy: Never
 EOF
 
-    # Get the container's IP (to be used for routeing)
-    ip=$(kubectl get pods -o yaml | "$sed" -rn "s!\s*podIP:\s(.*)!\1!p")
-    port="80"
+    # Wait for container to be ready
+    while [ "$(kubectl get pod "$name" -o json | jq -r .status.phase)" != "Running" ]; do
+      info "Waiting for session to be ready"
+      sleep 1
+    done
+
+    # Get the container's IP
+    ip=$(kubectl get pod "$name" -o json | jq -r .status.podIP)
+    port="2000"
 
   fi
 
