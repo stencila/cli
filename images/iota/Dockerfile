@@ -28,5 +28,10 @@ RUN apk add --no-cache --virtual .gyp \
 COPY environ.sh .environ.sh
 RUN chmod +x .environ.sh
 
+# Copy README.md
+COPY README.md .
+
 # Switch to guest user
 USER guest
+
+CMD ["node", "-e", "require('stencila-node').run('0.0.0.0', 2000)"]

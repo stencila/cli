@@ -81,6 +81,9 @@ RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview')"
 COPY environ.sh .environ.sh
 RUN chmod +x .environ.sh
 
+# Copy README.md
+COPY README.md .
+
 # Switch to guest user
 USER guest
 
@@ -89,3 +92,6 @@ USER guest
 RUN node -e "require('stencila-node').install()"
 RUN python -c "import stencila; stencila.install()"
 RUN Rscript -e "stencila:::install()"
+
+
+CMD ["node", "-e", "require('stencila-node').run('0.0.0.0', 2000)"]
