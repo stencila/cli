@@ -141,7 +141,11 @@ function bundle_sha {
 # See https://docs.docker.com/registry/spec/api/#overview for rules for repository
 # names
 function image_repo {
-  echo "stencila/bundles/$(bundle_name "")"
+  if [ "$SIBYL_REGISTRY" == "" ]; then
+    bundle_name ""
+  else
+    echo "$SIBYL_REGISTRY/$(bundle_name "")"
+  fi
 }
 
 function image_tag {
@@ -468,9 +472,6 @@ function build {
   local image_id
   image_id=$(image_id)
 
-  image_repo=$(image_repo)
-  image_tag=$(image_tag)
-
   # Is Google Container Registry (gcr.io) being used?
   local gcr
   gcr=$(echo "$SIBYL_REGISTRY" | grep -c '^gcr.io')
@@ -483,8 +484,13 @@ function build {
     image_exists=$(docker images --quiet "$image_id")
   else
     # Yes, check the registry
+    local image_repo
+    image_repo=$(image_repo)
+    local image_tag
+    image_tag=$(image_tag)
+    
     if [ "$gcr" == "1" ]; then
-      if [ "$(gcloud container images list-tags "$SIBYL_REGISTRY/$image_repo" | grep -c "$image_tag")" == "1" ]; then
+      if [ "$(gcloud container images list-tags "$image_repo" | grep -c "$image_tag")" == "1" ]; then
         image_exists="true"
       fi
     else
@@ -507,23 +513,16 @@ function build {
     fi
   done
 
-  local image_url
-  if [ "$SIBYL_REGISTRY" == "" ]; then
-    image_url=$image_id
-  else
-    image_url=$SIBYL_REGISTRY/$image_id
-  fi
-
   # Build the Docker image
-  info "Building image: $cyan'$image_url'$normal"
-  docker build --tag "$image_url" . | indent
+  info "Building image: $cyan'$image_id'$normal"
+  docker build --tag "$image_id" . | indent
 
   if [ "$SIBYL_REGISTRY" != "" ]; then
     # Push to the registry
     if [ "$gcr" == "1" ]; then
-      gcloud docker -- push "$image_url" | indent
+      gcloud docker -- push "$image_id" | indent
     else
-      docker push "$image_url" | indent
+      docker push "$image_id" | indent
     fi
   fi
 
@@ -560,13 +559,6 @@ function launch {
   local image_id
   image_id=$(image_id)
 
-  local image_url
-  if [ "$SIBYL_REGISTRY" == "" ]; then
-    image_url=$image_id
-  else
-    image_url=$SIBYL_REGISTRY/$image_id
-  fi
-
   # A unique name for the bundle container
   # Used to route to the container
   local name
@@ -595,7 +587,7 @@ function launch {
     done
 
     info "Launching container name:$cyan$name$normal port:$cyan$port$normal"
-    docker run --name "$name" --publish "$port:2000" --detach "$image_url" node -e "$cmd" | indent
+    docker run --name "$name" --publish "$port:2000" --detach "$image_id" node -e "$cmd" | indent
 
   else
     # ...the Kubernetes cluster
@@ -610,7 +602,7 @@ metadata:
 spec:
   containers:
     - name: bundle-container
-      image: $image_url
+      image: $image_id
       args: ["node", "-e", "$cmd"]
       ports:
         - containerPort: 2000
@@ -627,9 +619,6 @@ EOF
     # Get the container's IP (to be used for routeing)
     ip=$(kubectl get pods -o yaml | "$sed" -rn "s!\s*podIP:\s(.*)!\1!p")
     port="80"
-
-    # TODO IP should be a public IP and we maintain a routing table to
-    # the internal IP
 
   fi
 
