@@ -51,8 +51,7 @@ if test -t 1; then
 fi
 
 # Use coreutils version of "sed" if available.
-gsed --help 2&> /dev/null
-if [ $? == 0 ]; then
+if gsed --help 2&> /dev/null; then
   sed="gsed"
 else
   sed="sed"
@@ -192,7 +191,7 @@ function fetch {
   info "Changed to directory $cyan'$PWD'$normal"
 
   # Do the fetch!
-  read scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github|dat)://(.+)!\1 \2!p")"
+  read -r scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github|dat)://(.+)!\1 \2!p")"
   info "Fetching scheme '$cyan$scheme_$normal' with path '$cyan$path_$normal'"
   case $scheme_ in
     file)   fetch_file "$path_" ;;
@@ -234,7 +233,7 @@ function fetch_file_archive {
   # Get the archive file path and folder to extract from the address path
   local archive
   local folder
-  read archive folder <<< "$(echo "$path" | "$sed" -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
+  read -r archive folder <<< "$(echo "$path" | "$sed" -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
   info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
   # Extract into a temporary dir, move contents (including dot files)
@@ -257,7 +256,7 @@ function fetch_file_archive {
 function fetch_github {
   path=$1 # Address path i.e. repo/user/folder
 
-  read user repo folder <<< "$(echo "$path" | "$sed" -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
+  read -r user repo folder <<< "$(echo "$path" | "$sed" -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
 
   # Download the archive
