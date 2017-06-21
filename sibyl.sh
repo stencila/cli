@@ -142,7 +142,7 @@ function bundle_sha {
 # names
 function image_repo {
   if [ "$SIBYL_REGISTRY" == "" ]; then
-    bundle_name ""
+    echo "sibyl-$(bundle_name "")"
   else
     echo "$SIBYL_REGISTRY/$(bundle_name "")"
   fi
@@ -559,10 +559,9 @@ function launch {
   local image_id
   image_id=$(image_id)
 
-  # A unique name for the bundle container
-  # Used to route to the container
+  # A unique name for the session container
   local name
-  name="bundle-$(( RANDOM ))"
+  name="sibyl-session-$(( RANDOM ))"
 
   # Command to run the Stencila host
   local cmd
@@ -603,7 +602,8 @@ spec:
   containers:
     - name: bundle-container
       image: $image_id
-      args: ["node", "-e", "$cmd"]
+      command: "node"
+      args: ["-e", "$cmd"]
       ports:
         - containerPort: 2000
       resources:
@@ -617,7 +617,7 @@ spec:
 EOF
 
     # Get the container's IP (to be used for routeing)
-    ip=$(kubectl get pods -o yaml | "$sed" -rn "s!\s*podIP:\s(.*)!\1!p")
+    ip=$(kubectl get pod "$name" -o yaml | "$sed" -rn "s!\s*podIP:\s(.*)!\1!p")
     port="80"
 
   fi
