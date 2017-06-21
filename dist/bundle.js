@@ -6,7 +6,7 @@ module.exports={SET_EXAMPLE_NOTEBOOK:"set-example-notebook",LAUNCH_NOTEBOOK:"sse
 
 },{}],3:[function(require,module,exports){
 (function (process){
-const css=0,choo=require(9),events=require(2);null;const app=choo();"production"!==process.env.NODE_ENV&&(app.use(require(6)()),app.use(require(7)())),app.use(require(4)),app.use(function(e,r){e.form={address:""},r.on("DOMContentLoaded",function(){r.on(events.SET_EXAMPLE_NOTEBOOK,function(){e.form.address="github.com://octocat/spoon-knife",r.emit("render")})})}),app.route("/",require(5)),app.mount("body");
+const css=0,choo=require(9),events=require(2);null;const app=choo();"production"!==process.env.NODE_ENV&&(app.use(require(6)()),app.use(require(7)())),app.use(require(4)),app.use(function(e,r){e.form={address:""},r.on("DOMContentLoaded",function(){r.on(events.SET_EXAMPLE_NOTEBOOK,function(){e.form.address="github://octocat/spoon-knife",r.emit("render")})})}),app.route("/",require(5)),app.mount("body");
 
 }).call(this,require(27))
 },{"2":2,"26":26,"27":27,"4":4,"5":5,"6":6,"7":7,"9":9}],4:[function(require,module,exports){
