@@ -471,7 +471,11 @@ function build {
   image_repo=$(image_repo)
   image_tag=$(image_tag)
 
-  # Is the image aleady built?
+  # Is Google Container Registry (gcr.io) being used?
+  local gcr
+  gcr=$(echo "$SIBYL_REGISTRY" | grep -c '^gcr.io')
+
+  # Is the image already built?
   local image_exists
   # Is a Docker registry being used?
   if [ "$SIBYL_REGISTRY" == "" ]; then
@@ -479,8 +483,14 @@ function build {
     image_exists=$(docker images --quiet "$image_id")
   else
     # Yes, check the registry
-    if [ "$(curl -I -s -o /dev/null -w "%{http_code}" "http://$SIBYL_REGISTRY/v2/$image_repo/manifests/$image_tag")" == "200" ]; then
-      image_exists="true"
+    if [ "$gcr" == "1" ]; then
+      if [ "$(gcloud container images list-tags "$SIBYL_REGISTRY/$image_repo" | grep -c "$image_tag")" == "1" ]; then
+        image_exists="true"
+      fi
+    else
+      if [ "$(curl -I -s -o /dev/null -w "%{http_code}" "http://$SIBYL_REGISTRY/v2/$image_repo/manifests/$image_tag")" == "200" ]; then
+        image_exists="true"
+      fi
     fi
   fi
   if [ "$image_exists" != "" ]; then
@@ -510,7 +520,11 @@ function build {
 
   if [ "$SIBYL_REGISTRY" != "" ]; then
     # Push to the registry
-    docker push "$image_url"
+    if [ "$gcr" == "1" ]; then
+      gcloud docker -- push "$image_url" | indent
+    else
+      docker push "$image_url" | indent
+    fi
   fi
 
   # Remove any symlinks created

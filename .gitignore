@@ -2,6 +2,7 @@ build
 bundles
 coverage
 node_modules
+secrets
 
 # Ignore files generated in tests but not `.expected` files
 tests/*/.sibyl/*
