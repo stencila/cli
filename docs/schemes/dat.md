@@ -2,12 +2,6 @@
 
 [Dat](datproject.org) is a distributed data sharing tool. The `dat://` scheme allows you to fetch files from a Dat link that someone has shared with you.
 
-> **This scheme is not yet implemented!**
->
-> Want to help? See https://github.com/stencila/sibyl/issues/8
->
-> [Why are there unimplemented features in the documentation?](faq#unimplemented-features-in-docs)
-
 ## Setup
 
 To share a Dat hosted bundle from the [Dat Desktop](https://github.com/datproject/dat-desktop),
