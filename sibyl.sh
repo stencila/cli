@@ -42,7 +42,7 @@ if test -t 1; then
     #black="$(tput setaf 0)"
     red="$(tput setaf 1)"
     green="$(tput setaf 2)"
-    #yellow="$(tput setaf 3)"
+    yellow="$(tput setaf 3)"
     blue="$(tput setaf 4)"
     magenta="$(tput setaf 5)"
     cyan="$(tput setaf 6)"
@@ -64,12 +64,17 @@ function indent {
 
 # Print a STEP to terminal
 function step {
-  echo -e "${green}STEP${normal} $1 $2"
+  echo -e "${green}STEP${normal} $1"
 }
 
 # Print some INFO to terminal
 function info {
   echo -e "${blue}INFO${normal} $1"
+}
+
+# Print a WARN to terminal
+function warn {
+  echo -e "${yellow}WARN${normal} $1"
 }
 
 # Print an ERROR to stderr and exit
@@ -178,6 +183,8 @@ function fetch {
     return
   fi
 
+  step "Fetch"
+
   local dir_
   dir_="./bundles/$(bundle_name "$1")"
 
@@ -242,13 +249,13 @@ function fetch_file_archive {
   temp=$(mktemp -d)
   if [ "$folder" == "" ]; then
     tar -xzf "$archive" -C "$temp"
-    mv "$temp"/* "$temp"/.[!.]* .
+    mv "$temp"/* "$temp"/.[!.]* . 2> /dev/null
   else
     if [ "$(tar -tf "$archive" "$folder" 2> /dev/null | wc -l)" == "0" ]; then
       error "Folder '$cyan$folder$normal' does not exist in archive '$cyan$archive$normal'"
     fi
     tar -xzf "$archive" -C "$temp" "$folder"
-    mv "$temp/$folder"/* "$temp/$folder"/.[!.]* .
+    mv "$temp/$folder"/* "$temp/$folder"/.[!.]* . 2> /dev/null
   fi
   rm -rf "$temp"
 }
@@ -284,6 +291,26 @@ function fetch_dat {
   dat "$1" . --exit | indent
 }
 
+
+###############################################################################
+#
+# Check a bundle has a supported layout
+#
+###############################################################################
+
+function check {
+  fetch "$1" "continue"
+
+  step "Check"
+
+  # Check for a 'main' file
+  # shellcheck disable=SC2012
+  if [ "$(ls main.* index.* README.* -1 2>/dev/null | wc -l)" == 0 ]; then
+    warn "Unsupported layout"
+  fi
+}
+
+
 ###############################################################################
 #
 # Compile a Dockerfile for the bundle
@@ -291,7 +318,7 @@ function fetch_dat {
 ###############################################################################
 
 function compile {
-  fetch "$1" "continue"
+  check "$1" "continue"
 
   mkdir -p .sibyl
 
@@ -459,6 +486,7 @@ EOL
 
 }
 
+
 ###############################################################################
 #
 # Build a container image for a bundle
@@ -466,7 +494,9 @@ EOL
 ###############################################################################
 
 function build {
-  fetch "$1" "continue"
+  check "$1" "continue"
+
+  step "Build"
 
   local image_id
   image_id=$(image_id)
@@ -529,23 +559,6 @@ function build {
   find . -type l -delete
 }
 
-
-###############################################################################
-#
-# Check the container has the expected environment
-#
-###############################################################################
-
-function check {
-  build "$1"
-
-  info 'Running container to check its environment'
-  docker run "$(image_id)" ./.environ.sh > .sibyl/environ.json
-
-  # TODO compare .sibyl/environ.json with what was meant to be installed
-}
-
-
 ###############################################################################
 #
 # Launch a container
@@ -554,6 +567,8 @@ function check {
 
 function launch {
   build "$1"
+
+  step "Launch"
 
   local image_id
   image_id=$(image_id)
