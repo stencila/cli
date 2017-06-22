@@ -1,6 +1,6 @@
 # github://
 
-[Github](https://github.com/) is Git repository hosting service. The `github://` scheme lets you fetch a bundle from a Github hosted repository.
+[Github](https://github.com/) is a Git repository hosting service. The `github://` scheme lets you fetch a bundle from a Github hosted repository.
 
 You may also be interested in the [hook for Github](github-hook).
 

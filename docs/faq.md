@@ -1,8 +1,17 @@
+## What with the name?
+
+The sibyls were women that the ancient Greeks believed were [oracles](https://en.wikipedia.org/wiki/Sibyl). According to legend, they were incapable of speaking mistruths. That seemed like a good metaphor for a tool designed for reproducible documents. We could have called it "Oracle" instead - but that felt a little unoriginal and old fashioned ;)
+
+> ![Sibyl](assets/sibyl.jpg)
+>
+> A Delphic Sibyl from Michelangelo's Sistine Chapel fresco
+> (not to be xonfused with [Sybil Fawlty](https://www.youtube.com/watch?v=NPtIHwbguO4) who was also an oracle)
+
 ## Unimplemented features in docs?
 
-We're using documentation driven development (DDD) for Sibyl. For us, DDD is not about writing lengthy specification documents before doing any coding. It's about writing clear, user focused guides *before* a feature is implemented. It's like [README driven development](http://tom.preston-werner.com/2010/08/23/readme-driven-development.html).
+We're using documentation driven development (DDD) for Sibyl. It's not about writing 100 page specification documents before doing any coding. It's about writing clear, user focused guides before and during development. It's like [README driven development](http://tom.preston-werner.com/2010/08/23/readme-driven-development.html).
 
-The [advantages of DDD](https://youtu.be/x5rGUqRWlK8?t=178) that are most important to us are that it:
+The [advantages of DDD](https://youtu.be/x5rGUqRWlK8?t=178) include that it:
 
 - establishes a shared, easily accessible vision for the project
 

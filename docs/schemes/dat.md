@@ -1,6 +1,6 @@
 # dat://
 
-[Dat](datproject.org) is a distributed data sharing tool.The `dat://` scheme allows you to fetch files from a Dat link that someone has shared with you.
+[Dat](datproject.org) is a distributed data sharing tool. The `dat://` scheme allows you to fetch files from a Dat link that someone has shared with you.
 
 > **This scheme is not yet implemented!**
 >
