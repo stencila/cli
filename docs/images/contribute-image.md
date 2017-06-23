@@ -35,28 +35,36 @@ If you find yourself having to customize an image a lot, particularly if you nee
 	library(awesome_package)
 	```
 
-4. Make a Pull Request!
+4. Create a Pull Request!
 
 
 ## Contributing a new image
 
-You might want to contribute a new base image
+In some circumstances it may be better to contribute a new base image.
 
-1. Greek names
+1. Choose a name for the image. We are currently using the names of Greek letters as a naming convention (although that means names are not descriptive, it keeps them short and consistent).
 
-Create a symlink to the `README.md` inside the `docs/images` folder:
+2. Create a new directory for your image under `images`
 
-```sh
-cd docs/images
-ln -s ../../images/omega/README.md omega.md
-```
+3. Write you own `Dockerfile` guided by the existing base images (currently you will need to at least install the `stencila-node` package to Sibyl can talk to the container)
 
-Then add an entry in the table of contents: `docs/contents.json` e.g.
+4. Write a `README.md` which describes your container
 
-```json
-"images": {
-  "alpha": "images/alpha.md",
-  ...
-  "omega": "images/omega.md"
-}
-```
+5. Create a symlink to the `README.md` inside the `docs/images` folder:
+
+	```sh
+	cd docs/images
+	ln -s ../../images/omega/README.md omega.md
+	```
+
+6. Add an entry in the table of contents: `docs/contents.json` e.g.
+
+	```json
+	"images": {
+	  "alpha": "images/alpha.md",
+	  ...
+	  "omega": "images/omega.md"
+	}
+	```
+
+7. Create a Pull Request!

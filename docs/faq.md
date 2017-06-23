@@ -30,3 +30,15 @@ The primary disadvantage of DDD is that is may cause confusion amongst users bet
 > [Why are there unimplemented features in the documentation?](faq#unimplemented-features-in-docs)
 
 We're not advocating DDD as an approach for all software projects it just seems right for this particular project, at this particular time.
+
+## Are there alternatives?
+
+Yes!
+
+- [tmpnb]
+- [Everpub]
+- [Binder](https://github.com/binder-project/binder)
+
+## Is this the first attempt?
+
+No. Sibyl is an evolution of [previous](https://github.com/stencila/stencila/tree/jurassic/docker) [approaches](https://github.com/stencila/hub/tree/077dc00044f010b6d4150e6e0e18823815307e13/worker) to containerizing Stencila documents. It takes advantage of our new decoupled architecture to allow reproducible environments for documents written in various formats (e.g. HTML, RMarkdown, Jupyter notebooks) using various (and possibly multiple) languages (i.e. R, Python, Node.js). 

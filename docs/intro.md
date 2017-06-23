@@ -1,152 +1,94 @@
-Stencila is available for the [desktop](https://github.com/stencila/desktop) but what if you want to publish a document without your readers having to install any software? What if you want to collaborate on a reproducible document using exactly the same versions of packages for R, Python or Node.js?
+# Sibyl : a tool for building and running containers for reproducible documents
 
-Sibyl builds and runs execution environments for reproducible document bundles. A *bundle* is a collection of one or more files that contain the source of the document, supporting data and/or specifications of dependencies. Sibyl fetches a bundle, builds a container for it and opens the document.
+Stencila aims to be an "office suite" for reproducible research. With Stencila [Desktop](https://github.com/stencila/desktop) you can author documents on own machine. But what if you want to publish a document without your readers having to install any software? What if you want to collaborate on a reproducible document using exactly the same versions of packages for R, Python or Node.js? Or maybe you want to publish documents and allow you readers to interactively explore data driven documents from within their browser.
 
-Sibyl is an evolution of [previous](https://github.com/stencila/stencila/tree/jurassic/docker) [approaches](https://github.com/stencila/hub/tree/077dc00044f010b6d4150e6e0e18823815307e13/worker) to containerizing Stencila documents. It is inspired by the elegance of [Binder](https://github.com/binder-project/binder) and takes advantage of our new decoupled architecture to allow reproducible environments for documents written in various formats (e.g. HTML, RMarkdown, Jupyter notebooks) using various (and possibly multiple) languages (i.e. R, Python, Node.js).
-
-
-### Install
-
-There are different layers to Sibyl, having different levels of functionality and installation complexity.
-
-#### `sibyl.sh` Bash script
-
-At the heart of Sibyl is the [`sibyl.sh`](https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh) Bash script. You can use it to run most of Sibyls tasks on your local machine. Download it to somewhere on your `$PATH` and make it executable e.g. on Linux:
-
-```sh
-curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local/bin/sibyl
-chmod 755 ~/.local/bin/sibyl
-```
-
-`sibyl.sh` requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/), [`jq`](https://stedolan.github.io/jq/) and `netstat` to be installed. On older versions of Mac OS which don't have the `sed -r` you may have to install `gsed` using `brew install coreutils`.
-
-Use `sibyl.sh` with a task name and bundle "address" e.g. 
-
-```sh
-sibyl launch github://stencila/test`
-```
-
-or, in an existing bundle directory
-
-```
-sibyl launch
-```
-
-Tasks:
+Sibyl builds and runs execution environments for reproducible bundles. A *bundle* is a collection of one or more files that contain the source of the document, required data and/or specifications of dependencies. Sibyl fetches a bundle, checks the contents of the bundle, builds a container image for it, runs the container and opens the document:
 
 - `fetch`: fetch a bundle from some remote or local location
-- `compile`: `fetch` + compile a Dockerfile based on the contents of the bundle
-- `build`: `compile` + build a Docker image from the Dockerfile
+- `check`: `fetch` + check that the necessary files are in the bundle
+- `build`: `compile` + build a Docker image based on the contents of the bundle
 - `launch`: `build` + start a container from the image
 
-Addresses:
+## Bundle addreses
 
-- `file:/some/folder`: a bundle at `some/folder` on your filesystem
-- `file:/some/archive.tar.gz`: a bundle in an archive on your filesystem
-- `file:/some/archive.tar.gz/folder`: a bundle within `folder` in an archive on your filesystem
-- `github:/user/repo`: a bundle in a repository on Github
-- `github:/user/repo/folder`: a bundle within `folder` in a repository on Github
+A bundle _address_ is like a URL that tells Sibyl the location of the a bundle. Addresses follow the pattern:
+ 	
+    scheme://path
 
+The _scheme_ determines how Sibyl will `fetch` a bundle. There are several schemes available:
 
-To get closer to a production scenario you can set up and use a local private Docker registy:
+- [bitbucket://](bitbucket)
+- [dat://](dat)
+- [dropbox://](dropbox)
+- [file://](file)
+- [github://](github)
+- [gitlab://](gitlab)
+- [http://](http)
 
-```sh
-docker run --detach --net sibyl-net --name sibyl-registry --rm --publish 5000:5000 registry:2
-SIBYL_REGISTRY=localhost:5000 sibyl launch
-```
+You can launch a bundle from its address in several ways
 
+- using the form at http://via.stenci.la/
 
-#### `stencila-sibyl` Node.js package
+- using the address bar of your browser e.g. http://via.stenci.la/scheme://path
 
-The Node.js [package](https://www.npmjs.com/package/stencila-sibyl) provides a web interface to `sibyl.sh`:
+- using the command line interface
 
-```sh
-npm install stencila-sibyl
-```
+	```
+    sibyl launch scheme://path
+    ```
 
-The server requires `node` v7.6.0 or higher as well as the dependencies of `sibyl.sh` (above). The `sibyl.sh` script is installed as part of the package so you don't need to install that separately.
+## Bundle documents
 
-Start the server with `npm start` and then open browser at [`http://localhost:3000`](http://localhost:3000). When you provide the server with a bundle address (e.g. `http://localhost:3000/github://stencila/test`) it will launch a container based on that bundle, echoing progress to the browser. Then, once the container has been built and started, the browser is redirected to the bundle's "main" document running inside the container.
+Bundles usually have a "main" document - it's the document that is displayed when you "launch" a bundle. The main document is determined in the order of precedence from the following files:
 
-#### `stencila/sibyl-server` Docker image
+1. `main.*`
+2. `index.*`
+3. `README.*`
 
-Instead of installing Sibyl locally, you can use the `stencila/sibyl-server` Docker image. The Docker daemon is not available in that image so you have to make your local daemon available to it:
+where `*` can be one of the formats supported by Stencila. Currently, the supported formats are:
 
-```sh
-# Run container bound to the local Docker daemon
-docker run --detach --volume /var/run/docker.sock:/var/run/docker.sock --publish 3000:3000 stencila/sibyl-server
-```
+1. `md`
+2. `html`
+3. `ipynb`
+4. `Rmd`
 
-Or, if you want something that is closer to a Kubernetes deployment scenario with a Docker daemon running in it's own container, then:
+During the `check` stage, sibyl will warn you if you don't have a main document in your bundle. If you don't the `README.md` of the Stencila base image will be displayed.
 
-```sh
-# Create a network for the two containers to talk over
-docker network create sibyl-net
-# Run a Docker-in-Docker (`dind`) container to
-docker run --detach --net sibyl-net --name sibyl-docker --rm --privileged docker:dind
-# Run a Sibyl server container with DOCKER_HOST pointing to the Docker daemon running in the `dind` container
-docker run --detach --net sibyl-net --name sibyl-server --rm --env DOCKER_HOST=tcp://sibyl-docker:2375 --publish 3000:3000 stencila/sibyl-server
-```
+> The whole Stencila platform is in beta. Currently, Sibyl uses the `0.27-preview` branch of the various Stencila packages. Support for `ipynb` and `Rmd` are preliminary and Stencila extensions for `md` and `html` are evolving.
 
+> Currently, when the main document is opened in the browser you can edit it but you can't save it anywhere (although you can print to a PDF from the browser). We are working on adding the ability to save your document.
 
-#### Minikube cluster
-
-The [`deploy`](deploy) folder has configurations for deployment on a Minikube cluster. To try it out locally, install [`minikube`](https://kubernetes.io/docs/tasks/tools/install-minikube/) and [`kubectrl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and then:
-
-```sh
-# Start the Minikube cluster
-minikube start
-# Deploy Sibyl to the cluster
-make deploy-minikube
-```
-
-The minikube deployment provides a Docker registry service. Docker treats registries at `localhost:5000` in a special way, ignoring any TLS requirements that are usually in place. To make this work two port forwarding commands are necessary. The first makes the registry available on your localhost:
-
-```sh
-kubectl port-forward $(kubectl get pods | grep sibyl | awk '{print $1;}') 5000:5000 &
-```
-
-The second port forward, or rather reverse proxy, makes `localhost:5000` on the minikube virtual machine bounce through to the sibyl registry:
-```sh
-ssh -i ~/.minikube/machines/minikube/id_rsa -f -N -R 5000:localhost:5000 docker@$(minikube ip)
-```
-
-Check the `Deployment` is ready:
-
-```sh
-kubectl get deployments
-
-NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-sibyl              1         1         1            1           1h
-```
-
-You can then get the `sibyl-server-service` URL: 
-
-```sh
-minikube service sibyl-server --url
-```
-
-And check that it can launch a container:
-
-```sh
-curl $(minikube service sibyl-server --url)/~launch/github://octocat/spoon-knife
-```
-
-The Minikube dashboard can be useful: `minikube dashboard`. To use the `sibyl-ingress` you could try `minikube addons enable ingress`; but it's not really necessary because with the above approach you can talk directly to the `Services`.
-
-If you're developing the Docker images you can save time (and bandwidth) by not pushing/pulling images to/from the Docker Hub registry. To do that configure your local Docker client to use one of the Docker engines running inside the Minikube cluster:
-
-- if you're building the base images in the `images` folder, or if you're running `sibyl.sh` locally and want to build the bundle images inside the cluster, then use the Docker daemon in the `sibyl-docker` container of the `sibyl-deployment`:
-
-```sh
-export DOCKER_HOST=$(minikube service sibyl-docker --format "tcp://{{.IP}}:{{.Port}}")
-unset DOCKER_TLS_VERIFY
-```
-
-- if you're building the images in the `deploy` folder e.g. `sibyl-server`, including if you are modifying any code copied into thos images e.g. `server/server.js`, then use the Docker daemon in the cluster Kubelet: 
-
-```sh
-eval $(minikube docker-env)
-```
+The main document is the document that is opened by default in the browser (at the url ending in `/~`). But a bundle can contain more than one document which can be accessed via the browser address bar (e.g. `/~/my-other-doc.Rmd`)
 
 
+## Bundle data
+
+Bundles can also contain data that are required by the main document e.g. csv files. All files that are in the bundle are loaded into the home directory of the container, next to the main document.
+
+
+## Bundle requirements
+
+During the `build` stage, Sibyl creates a container image for the bundle using a _base image_. Currently, there are two base images:
+
+- [alpha](alpha): a comprehensive image for data analysis in Python, R and/or Node.js
+- [iota](iota): a minimal image for Sibyl development and testing
+
+The default base image is `alpha`. It contains the Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) (which allows you to author documents containing code in these languages) as well as a large number of system libraries and packages for scientific computing. It aims to provide a computing environment that meets the needs of 95% of research documents.
+
+If one of the base images does not meet your needs, you can [customize](customize-image) a bundle image by specifying one or more language requirements files. For more details for each language:
+
+- [Node.js](node)
+- [Python](python)
+- [R](r)
+
+If you find yourself having to customize an image a lot, particularly if you need to add missing packages, it might be an ideal opportunity to [contribute](contibute-image) to the library of base images.
+
+## Bundle hooks
+
+Manually creating to 
+
+> **This hooks are not yet implemented!**
+>
+> Want to see this done? Create a new issue:  https://github.com/stencila/sibyl/issues/new
+>
+> [Why are there unimplemented features in the documentation?](faq#unimplemented-features-in-docs)
