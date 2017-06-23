@@ -2,14 +2,6 @@
 
 [Dropbox](dropbox.com) is a popular file hosting service. The `dropbox://` scheme allows you to fetch files from a shared Dropbox folder.
 
-
-> **This scheme is not yet implemented!**
->
-> Want to see this done? Create a new issue:  https://github.com/stencila/sibyl/issues/new
->
-> [Why are there unimplemented features in the documentation?](faq#unimplemented-features-in-docs)
-
-
 ## Setup
 
 To share a folder on Dropbox:
