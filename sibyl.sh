@@ -191,12 +191,13 @@ function fetch {
   info "Changed to directory $cyan'$PWD'$normal"
 
   # Do the fetch!
-  read -r scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github|dat)://(.+)!\1 \2!p")"
+  read -r scheme_ path_ <<< "$(echo "$1" | "$sed" -rn "s!^(file|github|dat|dropbox)://(.+)!\1 \2!p")"
   info "Fetching scheme '$cyan$scheme_$normal' with path '$cyan$path_$normal'"
   case $scheme_ in
     file)   fetch_file "$path_" ;;
     github) fetch_github "$path_" ;;
     dat)    fetch_dat "$path_" ;;
+    dropbox)fetch_dropbox "$path_" ;;
     *)      error "Unknown scheme: $scheme_" ;;
   esac
 
@@ -215,8 +216,12 @@ function fetch_file {
     error "Path '$cyan$path$normal' does not exist"
   elif [ -d "$path" ]; then
     fetch_file_directory "$path"
+  elif [ "$(echo "$path" | grep -c ".*\.tar\.gz$")" == "1" ]; then
+    fetch_file_targz "$path"
+  elif [ "$(echo "$path" | grep -c ".*\.zip$")" == "1" ]; then
+    fetch_file_zip "$path"
   else
-    fetch_file_archive "$path"
+    error "Unknown file type"
   fi
 }
 
@@ -227,7 +232,7 @@ function fetch_file_directory {
   cp -R "$path"/. .
 }
 
-function fetch_file_archive {
+function fetch_file_targz {
   local path=$1 # Address path i.e. path/archive.tar.gz/folder
 
   # Get the archive file path and folder to extract from the address path
@@ -253,8 +258,15 @@ function fetch_file_archive {
   rm -rf "$temp"
 }
 
+function fetch_file_zip {
+  local path=$1 # Address path i.e. path/archive.zip
+
+  info "Fetching from zip archive '${cyan}$path${normal}'"
+  unzip -o -q "$path" | indent
+}
+
 function fetch_github {
-  path=$1 # Address path i.e. repo/user/folder
+  local path=$1 # Address path i.e. repo/user/folder
 
   read -r user repo folder <<< "$(echo "$path" | "$sed" -r "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
@@ -269,12 +281,11 @@ function fetch_github {
   root=$(tar -tf "$archive" | head -n 1)
 
   # Fetch from the file archive
-  fetch_file_archive "$archive/$root$folder"
+  fetch_file_targz "$archive/$root$folder"
 
   # Tidy up by removing the archive
   rm "$archive"
 }
-
 
 function fetch_dat {
   info "Fetching Dat repo '${cyan}$1${normal}'"
@@ -282,6 +293,23 @@ function fetch_dat {
 
   # Download the archive
   dat "$1" . --exit | indent
+}
+
+function fetch_dropbox {
+  local folder=$1 # Shared folder id
+
+  info "Fetching Dropbox shared folder '${cyan}$folder${normal}'"
+
+  # Download the archive
+  local archive
+  archive="$(mktemp -d)/archive.zip"
+  curl --silent --show-error --location "https://dropbox.com/sh/$folder?dl=1" > "$archive"
+
+  # Fetch from the zip archive
+  fetch_file_zip "$archive"
+
+  # Tidy up by removing the archive
+  rm "$archive"  
 }
 
 ###############################################################################
