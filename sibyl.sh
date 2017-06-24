@@ -555,35 +555,37 @@ function build {
       fi
     fi
   fi
+
   if [ "$image_exists" != "" ]; then
     info "Image already built: $cyan'$image_id'$normal"
-    return
+  else
+    compile
+
+    # Create symlinks necessary for Docker build
+    for file in "Dockerfile" ".dockerignore"; do
+      if [ ! -f "$file" ] && [ -f .sibyl/"$file" ]; then
+        ln -s .sibyl/"$file"
+      fi
+    done
+
+    # Build the Docker image
+    info "Building image: $cyan'$image_id'$normal"
+    docker build --tag "$image_id" . | indent
+
+    if [ "$SIBYL_REGISTRY" != "" ]; then
+      # Push to the registry
+      if [ "$gcr" == "1" ]; then
+        gcloud docker -- push "$image_id" | indent
+      else
+        docker push "$image_id" | indent
+      fi
+    fi
+
+    # Remove any symlinks created
+    find . -type l -delete
   fi
 
-  compile
-
-  # Create symlinks necessary for Docker build
-  for file in "Dockerfile" ".dockerignore"; do
-    if [ ! -f "$file" ] && [ -f .sibyl/"$file" ]; then
-      ln -s .sibyl/"$file"
-    fi
-  done
-
-  # Build the Docker image
-  info "Building image: $cyan'$image_id'$normal"
-  docker build --tag "$image_id" . | indent
-
-  if [ "$SIBYL_REGISTRY" != "" ]; then
-    # Push to the registry
-    if [ "$gcr" == "1" ]; then
-      gcloud docker -- push "$image_id" | indent
-    else
-      docker push "$image_id" | indent
-    fi
-  fi
-
-  # Remove any symlinks created
-  find . -type l -delete
+  echo -e "${magenta}IMAGE${normal} $image_id"
 }
 
 ###############################################################################
