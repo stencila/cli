@@ -242,7 +242,7 @@ function fetch_file_archive {
 function fetch_github {
   path=$1 # Address path i.e. repo/user/folder
 
-  read user repo folder <<< "$(echo "$path" | sed -E "s!^([^/]+?)/([^/]+)(/(.+))?!\1 \2 \4!")"
+  read user repo folder <<< "$(echo "$path" | sed -E "s!^([^/]+)/([^/]+)(/(.+))?!\1 \2 \4!")"
   info "Fetching Github repo '${cyan}$user/$repo${normal}' folder '${cyan}$folder${normal}'"
 
   # Download the archive
