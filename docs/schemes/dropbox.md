@@ -16,16 +16,16 @@ To share a folder on Dropbox:
 
 ## Browser
 
-To launch a Dropbox hosted bundle using https://via.stenci.la either use the following URL pattern:
+To launch a Dropbox hosted bundle using https://open.stenci.la either use the following URL pattern:
 
 ```sh
-https://via.stenci.la/dropbox://{id}
+https://open.stenci.la/dropbox://{id}
 ```
 
 e.g.
 
 ```sh
-https://via.stenci.la/dropbox://y5hy8uu0c8lilxu/AAASyzQjyIIyMSV9B66L2Mz-a
+https://open.stenci.la/dropbox://y5hy8uu0c8lilxu/AAASyzQjyIIyMSV9B66L2Mz-a
 ```
 
 Or, select the Dropbox icon and type in, or paste, the `id` into the address box.

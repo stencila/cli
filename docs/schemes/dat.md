@@ -15,16 +15,16 @@ To share a Dat hosted bundle from the [Dat Desktop](https://github.com/datprojec
 
 ## Browser
 
-To launch a Dat hosted bundle at https://via.stenci.la either use the following URL pattern:
+To launch a Dat hosted bundle at https://open.stenci.la either use the following URL pattern:
 
 ```sh
-https://via.stenci.la/dat://{link}
+https://open.stenci.la/dat://{link}
 ```
 
 e.g.
 
 ```sh
-https://via.stenci.la/dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93
+https://open.stenci.la/dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93
 ```
 
 Or, select the Dat icon and type in, or paste, the `link` into the address box.

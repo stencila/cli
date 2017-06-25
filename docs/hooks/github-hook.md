@@ -18,7 +18,7 @@
 
 4. Click "Add webhook" button
 
-5. Type `https://via.stenci.la/hooks/github` in the "Payload URL" box
+5. Type `https://open.stenci.la/hooks/github` in the "Payload URL" box
 
 6. Select `application/json` as the "Content type"
 
@@ -38,4 +38,4 @@ The form should look something like this before you click the "Add webhook" butt
 
 3. Click "Webhooks" in the left panel
 
-4. Click "Delete" button next to the Webhook starting `https://via.stenci.la/...`
+4. Click "Delete" button next to the Webhook starting `https://open.stenci.la/...`
