@@ -6,10 +6,10 @@ You may also be interested in the [hook for Github](github-hook).
 
 ## Browser
 
-To launch a Github hosted bundle using https://via.stenci.la, either use the following URL pattern:
+To launch a Github hosted bundle using https://open.stenci.la, either use the following URL pattern:
 
 ```sh
-https://via.stenci.la/github://{user}/{repo}/{folder}
+https://open.stenci.la/github://{user}/{repo}/{folder}
 ```
 
 The `folder` part is optional, if you leave it off the root folder of the repository will be used.
@@ -17,8 +17,8 @@ The `folder` part is optional, if you leave it off the root folder of the reposi
 e.g.
 
 ```sh
-https://via.stenci.la/github://octocat/hello-world/
-https://via.stenci.la/github://stencila/test/sub
+https://open.stenci.la/github://octocat/hello-world/
+https://open.stenci.la/github://stencila/test/sub
 ```
 
 Or, select the Github icon and type in, or paste, the `{user}/{repo}/{folder}` into the address box.

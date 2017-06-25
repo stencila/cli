@@ -10,16 +10,16 @@ The `http://` scheme allows you to fetch files from somewhare on the web.
 
 ## Browser
 
-To launch a web hosted bundle using https://via.stenci.la either use the following URL pattern:
+To launch a web hosted bundle using https://open.stenci.la either use the following URL pattern:
 
 ```sh
-https://via.stenci.la/http://...
+https://open.stenci.la/http://...
 ```
 
 e.g.
 
 ```sh
-https://via.stenci.la/http://foo.com/bar
+https://open.stenci.la/http://foo.com/bar
 ```
 
 Or, select the HTTP icon and type in, or paste, the URL into the address box.

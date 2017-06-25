@@ -4,7 +4,7 @@ The `file://` scheme lets you fetch a bundle from your local file system.
 
 ## Browser
 
-To launch a bundle from you local filesystem using https://via.stenci.la, 
+To launch a bundle from you local filesystem using https://open.stenci.la, 
 
 1. Select the file upload icon
 

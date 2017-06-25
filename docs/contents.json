@@ -22,10 +22,5 @@
     "Node.js": "langs/node.md",
     "Python": "langs/python.md",
     "R": "langs/r.md"
-  },
-  "Hooks": {
-    "Github": "hooks/github-hook.md",
-    "Gitlab": "hooks/gitlab-hook.md",
-    "Bitbucket": "hooks/bitbucket-hook.md"
   }
 }

@@ -1,8 +1,8 @@
 # Sibyl : a tool for building and running containers for reproducible documents
 
-Stencila aims to be an "office suite" for reproducible research. With Stencila [Desktop](https://github.com/stencila/desktop) you can author documents on own machine. But what if you want to publish a document without your readers having to install any software? What if you want to collaborate on a reproducible document using exactly the same versions of packages for R, Python or Node.js? Or maybe you want to publish documents and allow you readers to interactively explore data driven documents from within their browser.
+Stencila aims to be an "office suite" for reproducible research. With Stencila [Desktop](https://github.com/stencila/desktop) you can author documents on own computer. But what if you want to publish a document without your readers having to install any software? What if you want to collaborate on a reproducible document using exactly the same versions of packages for R, Python or Node.js? Or maybe you want to publish documents and allow you readers to interactively explore data driven documents from within their browser.
 
-Sibyl builds and runs execution environments for reproducible bundles. A *bundle* is a collection of one or more files that contain the source of the document, required data and/or specifications of dependencies. Sibyl fetches a bundle, checks the contents of the bundle, builds a container image for it, runs the container and opens the document:
+Sibyl builds and runs execution environments for reproducible document bundles. A *bundle* is a collection of one or more files that contain the source of the document, required data and/or specifications of dependencies. Sibyl fetches a bundle, checks the contents of the bundle, builds a container image for it, runs the container and opens the document:
 
 - `fetch`: fetch a bundle from some remote or local location
 - `check`: `fetch` + check that the necessary files are in the bundle
@@ -31,10 +31,7 @@ You can launch a bundle from its address in several ways
 
 - using the address bar of your browser e.g. http://via.stenci.la/scheme://path
 
-- using the command line interface
-
-	```
-    sibyl launch scheme://path
+- using the command line tool `sibyl launch scheme://path`
     ```
 
 ## Bundle documents
@@ -81,14 +78,4 @@ If one of the base images does not meet your needs, you can [customize](customiz
 - [Python](python)
 - [R](r)
 
-If you find yourself having to customize an image a lot, particularly if you need to add missing packages, it might be an ideal opportunity to [contribute](contibute-image) to the library of base images.
-
-## Bundle hooks
-
-Manually creating to 
-
-> **This hooks are not yet implemented!**
->
-> Want to see this done? Create a new issue:  https://github.com/stencila/sibyl/issues/new
->
-> [Why are there unimplemented features in the documentation?](faq#unimplemented-features-in-docs)
+If you find yourself having to customize an image a lot, particularly if you need to add missing packages, it might be an ideal opportunity to [contribute](contribute-image) to the library of base images.
