@@ -10,7 +10,7 @@
 
 Sibyl builds and runs execution environments for reproducible document bundles. A *bundle* is a collection of one or more files that contain the source of the document, supporting data and/or specifications of dependencies. Sibyl fetches a bundle, builds a container for it and opens the document.
 
-Sibyl runs http://via.stenci.la. Documentation is at http://sibyl.surge.sh.
+Sibyl runs http://open.stenci.la. Documentation is at http://sibyl.surge.sh.
 
 Feature                                       | Ready/Issue
 :---------------------------------------------| :---:
@@ -18,10 +18,10 @@ Feature                                       | Ready/Issue
 [bitbucket://](docs/schemes/bitbucket.md)     |
 [dat://](docs/schemes/dat.md)                 | ✓
 [dropbox://](docs/schemes/dropbox.md)         | ✓
-[file://](docs/schemes/file.md)               | ✓ (CLI only)
+[file://](docs/schemes/file.md)               | ✓ (CLI only see #6)
 [github://](docs/schemes/github.md)           | ✓
 [gitlab://](docs/schemes/gitlab.md)           |
-[http://](docs/schemes/http.md)               | #?
+[http://](docs/schemes/http.md)               | #4
 **Languages** for running code cells          |
 [Node.js](docs/langs/node.md)                 | ✓
 [Python](docs/langs/python.md)                | ✓
