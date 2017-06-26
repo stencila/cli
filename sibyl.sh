@@ -643,7 +643,7 @@ metadata:
   name: $name
 spec:
   containers:
-    - name: bundle-container
+    - name: session-container
       image: $image_id
       command: ["node"]
       args: ["-e", "$cmd"]
@@ -654,8 +654,8 @@ spec:
           memory: "128Mi"
           cpu: "250m"
         limits:
-          memory: "256Mi"
-          cpu: "500m"
+          memory: "2Gi"
+          cpu: "1000m"
   restartPolicy: Never
 EOF
 
