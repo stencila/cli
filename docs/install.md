@@ -1,6 +1,6 @@
 # Install
 
-The easiest way to use Sibyl is at http://via.stenci.la . But you might want to run it locally, particularly if your interested in contributing code.
+The easiest way to use Sibyl is at http://open.stenci.la . But you might want to run it locally, particularly if your interested in contributing code.
 
 ## `sibyl.sh` Bash script
 

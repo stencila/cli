@@ -27,9 +27,9 @@ The _scheme_ determines how Sibyl will `fetch` a bundle. There are several schem
 
 You can launch a bundle from its address in several ways
 
-- using the form at http://via.stenci.la/
+- using the form at http://open.stenci.la/
 
-- using the address bar of your browser e.g. http://via.stenci.la/scheme://path
+- using the address bar of your browser e.g. http://open.stenci.la/scheme://path
 
 - using the command line tool `sibyl launch scheme://path`
     ```
