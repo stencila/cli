@@ -1,5 +1,6 @@
 ## Sibyl
 
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 [![Build status](https://travis-ci.org/stencila/sibyl.svg?branch=master)](https://travis-ci.org/stencila/sibyl)
 [![Code coverage](https://codecov.io/gh/stencila/sibyl/branch/master/graph/badge.svg)](https://codecov.io/gh/stencila/sibyl)
 [![Chat](https://badges.gitter.im/stencila/stencila.svg)](https://gitter.im/stencila/stencila)
@@ -12,16 +13,16 @@ Sibyl builds and runs execution environments for reproducible document bundles. 
 
 Sibyl runs http://open.stenci.la. Documentation is at http://sibyl.surge.sh.
 
-Feature                                       | Ready/Issue
-:---------------------------------------------| :---:
+Feature                                       | Ready / Issue
+:---------------------------------------------| :-----------:
 **Schemes** for getting document bundles      |
 [bitbucket://](docs/schemes/bitbucket.md)     |
 [dat://](docs/schemes/dat.md)                 | ✓
 [dropbox://](docs/schemes/dropbox.md)         | ✓
-[file://](docs/schemes/file.md)               | ✓ (CLI only see #6)
+[file://](docs/schemes/file.md)               | ✓ (CLI only see [#6](https://github.com/stencila/sibyl/issues/6))
 [github://](docs/schemes/github.md)           | ✓
 [gitlab://](docs/schemes/gitlab.md)           |
-[http://](docs/schemes/http.md)               | #4
+[http://](docs/schemes/http.md)               | [#4](https://github.com/stencila/sibyl/issues/4)
 **Languages** for running code cells          |
 [Node.js](docs/langs/node.md)                 | ✓
 [Python](docs/langs/python.md)                | ✓
@@ -31,6 +32,12 @@ Feature                                       | Ready/Issue
 [iota (ι)](docs/images/iota.md)               | ✓
 [Customize](docs/images/customize-image.md)   | ✓
 [Contribute](docs/images/contribute-image.md) | ✓
+**Hooks** for triggering builds               |
+Email                                         | [#51](https://github.com/stencila/sibyl/issues/51)
+[Github](docs/hooks/github-hook.md)           | 
+[Gitlab](docs/hooks/gitlab-hook.md)           | 
+[Bitbucket](docs/hooks/bitbucket-hook.md)     | 
+
 
 Installation and contribution guides are available in the [docs](http://sibyl.surge.sh) or directly from:
 
