@@ -5,7 +5,7 @@ The sibyls were women that the ancient Greeks believed were [oracles](https://en
 > ![Sibyl](assets/sibyl.jpg)
 >
 > A Delphic Sibyl from Michelangelo's Sistine Chapel fresco
-> (not to be xonfused with [Sybil Fawlty](https://www.youtube.com/watch?v=NPtIHwbguO4) who was also an oracle)
+> (not to be confused with [Sybil Fawlty](https://www.youtube.com/watch?v=NPtIHwbguO4) who was also an oracle)
 
 ## Are there similar projects?
 
@@ -14,6 +14,16 @@ There are several similar projects for Jupyter:
 - [tmpnb](https://github.com/jupyter/tmpnb)
 - [everware](https://github.com/everware)
 - [Binder](https://github.com/binder-project/binder)
+
+## Why not just build on these?
+
+Sibyl has drawn inspiration and ideas from these great projects, particularly Binder. However, they all have a focus on spawning per user sessions in a single language. 
+
+Stencila is able to run code for multiple languages within one document. Although the majority of users will write single language documents, we wanted to ensure support for multi-language computing. 
+
+Also, the semantics of code cells in Stencila Documents and Sheets allow a purely functional approach to code execution (a.k.a ["serverless" conputing](https://en.wikipedia.org/wiki/Serverless_computing)). This means that code cells can be executed "on-the-fly" and a user doesn't need to consume compute resources when simply reading text. This will be important for publishing reproducible documents at scale.
+
+For these reasons, it was easier and allowed for greater flexibility, to start afresh with a platform-specific solution, rather than attempt to shoehorn an alternative approach into mature code bases.
 
 ## Unimplemented features in docs?
 
