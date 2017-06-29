@@ -1,0 +1,17 @@
+bankai@^8.0.0
+choo@^6.0.0-0
+choo-expose@^1.0.1
+choo-log@^7.0.0-0
+cookie@^0.3.1
+end-of-stream@^1.4.0
+jsonwebtoken@^7.4.1
+merry@^5.2.0
+nanobounce@^1.0.1
+parse-formdata@^1.0.1
+pump@^1.0.2
+send@^0.15.2
+sheetify@^6.1.0
+stencila@0.27-preview
+tachyons@^4.7.4
+validate-formdata@^1.0.0
+xhr@^2.4.0

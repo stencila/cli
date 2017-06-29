@@ -1,1 +1,0 @@
-../../images/alpha/README.md
