@@ -27,6 +27,7 @@
   "dependencies": {
     "array-lru": "^1.1.1",
     "bankai": "^8.0.0",
+    "cache-component": "^5.0.0-1",
     "choo": "^6.0.0-0",
     "choo-expose": "^1.0.1",
     "choo-log": "^7.0.0-0",
@@ -38,6 +39,7 @@
     "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
     "send": "^0.15.2",
+    "shallowequal": "^1.0.1",
     "sheetify": "^6.1.0",
     "stencila": "0.27-preview",
     "tachyons": "^4.7.4",
