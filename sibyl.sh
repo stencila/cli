@@ -582,7 +582,11 @@ function build {
     fi
 
     # Remove any symlinks created
-    find . -type l -delete
+    for file in "Dockerfile" ".dockerignore"; do
+      if [ -L "$file" ]; then
+        rm "$file"
+      fi
+    done
   fi
 
   echo -e "${magenta}IMAGE${normal} $image_id"
