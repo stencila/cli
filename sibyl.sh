@@ -177,9 +177,8 @@ function image_id {
 ###############################################################################
 
 function fetch {
-  # If not called with any argument, then already fetched and
-  # nothing to do
-  if [ "$1" == "" ]; then
+  # If Called with `.` ie $PWD, then already fetched and nothing to do
+  if [ "$1" == "." ]; then
     return
   fi
 
@@ -345,7 +344,6 @@ function check {
 ###############################################################################
 
 function compile {
-  check "$1" "continue"
 
   mkdir -p .sibyl
 
@@ -599,6 +597,10 @@ function build {
 ###############################################################################
 
 function launch {
+  if [ "$1" == "" ]; then
+    error "No bundle address provided"
+  fi
+
   build "$1"
 
   step "Launch"

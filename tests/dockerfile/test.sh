@@ -5,7 +5,7 @@ if [ "${BASH_SOURCE[0]}" == "$0" ]; then
   source "../funcs.sh"
 fi
 
-launch
+launch .
 
 # There should be container running using this image
 assert_unempty "$(docker ps --filter="ancestor=$(image_id)" --quiet)"

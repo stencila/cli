@@ -25,9 +25,9 @@ do
     # If there is a `.build` file in the folder
     # then do a build, otherwise just a compile
     if [ -e ".build" ]; then
-      build
+      build .
     else
-      compile
+      compile .
     fi
     # Assert that files are as expected
     for file in .sibyl/*.expected; do
