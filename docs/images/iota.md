@@ -1,1 +1,0 @@
-../../images/iota/README.md
