@@ -65,9 +65,10 @@ Bundles can also contain data that are required by the main document e.g. csv fi
 
 ## Bundle requirements
 
-During the `build` stage, Sibyl creates a container image for the bundle using a _base image_. Currently, there are two base images:
+During the `build` stage, Sibyl creates a container image for the bundle using a _base image_. Currently, there are three base images:
 
 - [alpha](alpha): a comprehensive image for data analysis in Python, R and/or Node.js
+- [rho](rho): an image for data analysis in R only
 - [iota](iota): a minimal image for Sibyl development and testing
 
 The default base image is `alpha`. It contains the Stencila packages for [Node.js](https://github.com/stencila/node), [Python](https://github.com/stencila/python) and [R](https://github.com/stencila/r) (which allows you to author documents containing code in these languages) as well as a large number of system libraries and packages for scientific computing. It aims to provide a computing environment that meets the needs of 95% of research documents.
