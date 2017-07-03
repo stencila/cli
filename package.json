@@ -28,7 +28,7 @@
     "array-lru": "^1.1.1",
     "bankai": "^8.0.0",
     "cache-component": "^5.0.0-1",
-    "choo": "^6.0.0-0",
+    "choo": "^6.0.0-2",
     "choo-expose": "^1.0.1",
     "choo-log": "^7.0.0-0",
     "cookie": "^0.3.1",
