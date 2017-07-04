@@ -35,7 +35,6 @@
     "end-of-stream": "^1.4.0",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
-    "nanobounce": "^1.0.1",
     "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
     "send": "^0.15.2",
@@ -44,7 +43,7 @@
     "stencila": "0.27-preview",
     "tachyons": "^4.7.4",
     "uuid": "^3.1.0",
-    "validate-formdata": "^2.0.0",
+    "validate-formdata": "^2.0.1",
     "xhr": "^2.4.0"
   },
   "devDependencies": {
