@@ -3,6 +3,7 @@ bundles
 coverage
 node_modules
 secrets
+npm-debug.log
 
 # Ignore files generated in tests but not `.expected` files
 tests/*/.sibyl/*
