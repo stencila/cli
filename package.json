@@ -43,7 +43,7 @@
     "stencila": "0.27-preview",
     "tachyons": "^4.7.4",
     "uuid": "^3.1.0",
-    "validate-formdata": "^2.0.1",
+    "validate-formdata": "^2.1.0",
     "xhr": "^2.4.0"
   },
   "devDependencies": {
