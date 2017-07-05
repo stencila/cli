@@ -6,6 +6,7 @@
     "build": "bankai build client/index.js --verbose",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
+    "inspect": "NODE_ENV=production bankai inspect client/index.js",
     "lint": "standard",
     "serve": "node server/server.js | merry",
     "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ --ignore client/ --ignore bundles/ server/server.js | merry",
