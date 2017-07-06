@@ -73,9 +73,9 @@ RUN Rscript -e "\
 
 # Install Stencila packages
 # Currently here near the end for easy updating during development
-RUN npm install https://github.com/stencila/node/tarball/0.27-preview
-RUN pip install https://github.com/stencila/py/tarball/0.27-preview
-RUN Rscript -e "devtools::install_github('stencila/r@0.27-preview')"
+RUN npm install stencila-node@0.27.0
+RUN pip install https://github.com/stencila/py/tarball/0.27.0
+RUN Rscript -e "devtools::install_github('stencila/r@0.27.0')"
 
 # Copy environment reflection script
 COPY environ.sh .environ.sh

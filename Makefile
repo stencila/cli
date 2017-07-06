@@ -17,6 +17,8 @@ docs-publish:
 image-%:
 	docker build images/$* --tag stencila/$*
 
+images: image-alpha image-iota image-rho
+
 run:
 	npm start
 

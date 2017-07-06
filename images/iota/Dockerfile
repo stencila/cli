@@ -21,7 +21,7 @@ RUN apk add --no-cache --virtual .gyp \
      python \
      make \
      g++ \
- && npm install https://github.com/stencila/node/tarball/0.27-preview \
+ && npm install stencila-node@0.27.0 \
  && apk del .gyp
 
 # Copy environment reflection script
