@@ -222,7 +222,7 @@ function fetch_file {
     error "Path '$cyan$path$normal' does not exist"
   elif [ -d "$path" ]; then
     fetch_file_directory "$path"
-  elif [ "$(echo "$path" | grep -c ".*\.tar\.gz$")" == "1" ]; then
+  elif [ "$(echo "$path" | grep -c ".*[\.tar\.gz|\.tgz]$")" == "1" ]; then
     fetch_file_targz "$path"
   elif [ "$(echo "$path" | grep -c ".*\.zip$")" == "1" ]; then
     fetch_file_zip "$path"
@@ -244,7 +244,7 @@ function fetch_file_targz {
   # Get the archive file path and folder to extract from the address path
   local archive
   local folder
-  read -r archive folder <<< "$(echo "$path" | "$sed" -r "s!^(.*(\.tar\.gz))(/(.+))?!\1 \4!")"
+  read -r archive folder <<< "$(echo "$path" | "$sed" -r "s!^(.*([\.tar\.gz|\.tgz]))(/(.+))?!\1 \4!")"
   info "Fetching from file archive '${cyan}$archive${normal}' folder '${cyan}$folder${normal}'"
 
   # Extract into a temporary dir, move contents (including dot files)

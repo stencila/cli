@@ -34,6 +34,7 @@
     "choo-log": "^7.0.0-0",
     "cookie": "^0.3.1",
     "end-of-stream": "^1.4.0",
+    "fast-json-parse": "^1.0.2",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
     "parse-formdata": "^1.0.1",
