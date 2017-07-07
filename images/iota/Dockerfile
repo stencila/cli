@@ -14,6 +14,9 @@ FROM node:alpine
 # There is already a guest user so just use its home
 WORKDIR /home/guest
 
+# Set the HOME env var so that untildify works
+ENV HOME /home/guest
+
 # Unfortunately, `stencila-node` is dependent upon `canvas`
 # which requires `node-gyp` and Python to be installed. Those
 # depenedncies may be able to be removed in the future.
