@@ -33,20 +33,24 @@
     "choo-expose": "^1.0.1",
     "choo-log": "^7.0.0-0",
     "cookie": "^0.3.1",
+    "copy-dir": "^0.3.0",
     "end-of-stream": "^1.4.0",
     "fast-json-parse": "^1.0.2",
+    "gunzip-maybe": "^1.4.1",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
+    "request": "^2.81.0",
     "send": "^0.15.2",
     "shallowequal": "^1.0.1",
     "sheetify": "^6.1.0",
     "stencila": "0.27-preview",
     "tachyons": "^4.7.4",
     "tar-filter-stream": "^1.0.0",
+    "tar-fs": "^1.15.3",
     "uuid": "^3.1.0",
     "validate-formdata": "^2.1.0",
     "xhr": "^2.4.0"
@@ -54,6 +58,8 @@
   "devDependencies": {
     "minidocs": "^4.2.3",
     "nodemon": "^1.11.0",
-    "standard": "*"
+    "spok": "^0.8.1",
+    "standard": "*",
+    "tape": "^4.6.3"
   }
 }
