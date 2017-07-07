@@ -6,6 +6,7 @@
     "build": "NODE_ENV=production bankai build client/index.js --verbose",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
+    "inspect": "NODE_ENV=production bankai inspect client/index.js",
     "lint": "standard",
     "serve": "node server/server.js | merry",
     "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ --ignore client/ --ignore bundles/ server/server.js | merry",
@@ -33,6 +34,7 @@
     "choo-log": "^7.0.0-0",
     "cookie": "^0.3.1",
     "end-of-stream": "^1.4.0",
+    "fast-json-parse": "^1.0.2",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
     "parse-formdata": "^1.0.1",
@@ -42,6 +44,7 @@
     "sheetify": "^6.1.0",
     "stencila": "0.27-preview",
     "tachyons": "^4.7.4",
+    "tar-filter-stream": "^1.0.0",
     "uuid": "^3.1.0",
     "validate-formdata": "^2.1.0",
     "xhr": "^2.4.0"

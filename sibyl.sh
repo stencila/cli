@@ -316,7 +316,7 @@ function fetch_dropbox {
   fetch_file_zip "$archive"
 
   # Tidy up by removing the archive
-  rm "$archive"  
+  rm "$archive"
 }
 
 ###############################################################################
@@ -542,7 +542,7 @@ function build {
     image_repo=$(image_repo)
     local image_tag
     image_tag=$(image_tag)
-    
+
     if [ "$gcr" == "1" ]; then
       if [ "$(gcloud container images list-tags "$image_repo" | grep -c "$image_tag")" == "1" ]; then
         image_exists="true"
