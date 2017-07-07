@@ -2,10 +2,14 @@ var minimist = require('minimist')
 
 var usage = `
   Usage:
-    $ sibyl fetch <value> [options]
+    $ sibyl fetch <address> [options]
 
   Options:
     -h, --help   Print usage
+
+  Examples:
+    sibyl fetch file://path/archive.tar.gz         # Fetch from the filesystem
+    sibyl fetch github://user/repo/parent/folder   # Fetch from github
 `
 
 module.exports = fetch
@@ -15,11 +19,15 @@ function fetch (argv) {
     alias: { help: 'h' }
   })
 
-  var value = argv._[0]
-  if (value === undefined) {
-    console.log('Please provide a valid value.')
+  var address = argv._[0]
+  if (address === undefined) {
+    console.log('Please provide a valid address.')
     console.log(usage)
   } else if (argv.help) {
     console.log(usage)
+  } else {
+    var Sibyl = require('../lib/sibyl')
+    var sibyl = Sibyl()
+    sibyl.fetch(address)
   }
 }

@@ -38,6 +38,7 @@
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
     "send": "^0.15.2",
