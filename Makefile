@@ -1,9 +1,24 @@
-all: setup build cover
+all: setup lint cover build
+
 
 setup:
 	npm install
-	bash kcov-install.sh
-	sudo apt-get install shellcheck
+
+run:
+	npm start
+
+lint:
+	npm run lint
+
+test:
+	npm test
+
+cover:
+	npm run cover
+
+build:
+	npm build
+
 
 docs-build:
 	npm run docs-build
@@ -14,22 +29,12 @@ docs-serve:
 docs-publish:
 	npm run docs-publish
 
+
 image-%:
 	docker build images/$* --tag stencila/$*
 
 images: image-alpha image-iota image-rho
 
-run:
-	npm start
-
-lint:
-	shellcheck *.sh && npm run lint
-
-test:
-	cd tests && bash run.sh
-
-cover:
-	cd tests && kcov --include-path=../sibyl.sh ../coverage run.sh
 
 deploy-minikube:
 	eval $$(minikube docker-env) && cd deploy/sibyl-server && . ./build.sh
