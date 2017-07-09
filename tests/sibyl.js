@@ -6,6 +6,17 @@ var fs = require('fs')
 
 var Sibyl = require('../lib/sibyl')
 
+tape('fetch should error for unknown protocol', function (assert) {
+  assert.plan(2)
+  var sibyl = Sibyl()
+  sibyl.fetch('bad format', function (err, res) {
+    assert.equal(err.message, 'No location provided')
+  })
+  sibyl.fetch('unprotocol://location', function (err, res) {
+    assert.equal(err.message, 'Unknown protocol: unprotocol')
+  })
+})
+
 tape('should fetch from disk directory', function (assert) {
   assert.plan(2)
   var dir = path.join('/tmp', uuid().slice(0, 6))
