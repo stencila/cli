@@ -36,7 +36,7 @@ var usage = `
   if (argv.help && !subcommand) {
     console.log(usage)
   } else if (argv.version) {
-    console.log(require('./package.json').version)
+    console.log(require('../package.json').version)
   } else if (commands.indexOf(subcommand) === -1) {
     console.log('Please provide a valid command from the list below.')
     console.log(usage)
