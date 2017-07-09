@@ -17,11 +17,11 @@ var usage = `
     $ sibyl <command> [options]
 
   Commands:
-    fetch      Fetch an image
-    compile    Compile an image
-    build      Build an image
-    check      Validate an image
-    launch     Launch an image
+    fetch      Fetch a bundle
+    check      Check a bundle's content
+    compile    Compile a bundle
+    build      Build a bundle image
+    launch     Launch a bundle container
 
   Options:
     -h, --help              Print usage
