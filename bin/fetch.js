@@ -20,10 +20,10 @@ function fetch (argv) {
   })
 
   var address = argv._[0]
-  if (address === undefined) {
-    console.log('Please provide a valid address.')
+  if (argv.help) {
     console.log(usage)
-  } else if (argv.help) {
+  } else if (address === undefined) {
+    console.log('Please provide a valid address.')
     console.log(usage)
   } else {
     var Sibyl = require('../lib/sibyl')

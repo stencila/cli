@@ -16,10 +16,10 @@ function launch (argv) {
   })
 
   var value = argv._[0]
-  if (value === undefined) {
-    console.log('Please provide a valid value.')
+  if (argv.help) {
     console.log(usage)
-  } else if (argv.help) {
+  } else if (value === undefined) {
+    console.log('Please provide a valid value.')
     console.log(usage)
   }
 }
