@@ -2,13 +2,10 @@ language: node_js
 node_js:
   - "6"
 
-sudo: required
-
 services:
   - docker
 
 script:
-  - make setup
   - make lint
   - make cover
 
