@@ -47,7 +47,6 @@
     "tachyons": "^4.7.4",
     "tar-filter-stream": "^1.0.0",
     "uuid": "^3.1.0",
-    "validate-formdata": "^2.1.0",
     "xhr": "^2.4.0"
   },
   "devDependencies": {
