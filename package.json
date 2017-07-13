@@ -37,6 +37,7 @@
     "fast-json-parse": "^1.0.2",
     "jsonwebtoken": "^7.4.1",
     "merry": "^5.2.0",
+    "on-idle": "^3.1.0",
     "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
     "send": "^0.15.2",
@@ -46,7 +47,6 @@
     "tachyons": "^4.7.4",
     "tar-filter-stream": "^1.0.0",
     "uuid": "^3.1.0",
-    "validate-formdata": "^2.1.0",
     "xhr": "^2.4.0"
   },
   "devDependencies": {
