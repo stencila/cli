@@ -1,29 +1,11 @@
 language: node_js
 node_js:
-  - "7"
-
-sudo: required
+  - "6"
 
 services:
   - docker
 
-addons:
-  apt:
-    packages:
-      # Required by sibyl
-      - jq
-      # ShellCheck linter
-      - shellcheck
-      # Required by kcov
-      - binutils-dev
-      - libcurl4-openssl-dev
-      - zlib1g-dev
-      - libdw-dev
-      - libiberty-dev
-      - cmake
-
 script:
-  - make setup
   - make lint
   - make cover
 
