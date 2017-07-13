@@ -3,7 +3,7 @@
 var minimist = require('minimist')
 var path = require('path')
 
-var commands = [ 'fetch', 'check', 'compile', 'build', 'run' ]
+var commands = [ 'fetch', 'check', 'compile', 'build', 'run', 'open' ]
 var argv = minimist(process.argv.slice(2), {
   string: commands,
   alias: {
@@ -22,6 +22,7 @@ var usage = `
     compile    Compile a bundle
     build      Build a bundle image
     run        Run a bundle container
+    open       Open a bundle in browser
 
   Options:
     -h, --help              Print usage
