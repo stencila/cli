@@ -3,7 +3,7 @@
   "version": "0.26.0",
   "description": "Stencila in containers",
   "scripts": {
-    "build": "NODE_ENV=production bankai build client/index.js --verbose",
+    "build": "mkdir -p dist && pkg bin/index.js --out-path dist -t node6-linux-x64,node6-macos-x64,node6-win-x64,",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "test": "standard && npm run test-deps && node tests",
@@ -36,21 +36,18 @@
     "send": "^0.15.2",
     "sha1": "^1.1.1",
     "shallowequal": "^1.0.1",
-    "sheetify": "^6.1.0",
     "slug": "^0.9.1",
-    "stencila": "0.27-preview",
-    "tachyons": "^4.7.4",
     "tar-filter-stream": "^1.0.0",
     "tar-fs": "^1.15.3",
     "uuid": "^3.1.0",
-    "xhr": "^2.4.0",
-    "tar-fs": "^1.15.3"
+    "xhr": "^2.4.0"
   },
   "devDependencies": {
     "dependency-check": "^2.6.1",
     "istanbul": "^0.4.5",
     "minidocs": "^4.2.3",
     "nodemon": "^1.11.0",
+    "pkg": "^4.1.2",
     "split2": "^2.1.1",
     "spok": "^0.8.1",
     "standard": "*",
