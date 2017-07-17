@@ -6,8 +6,10 @@
     "build": "mkdir -p dist && pkg bin/index.js --out-path dist -t node6-linux-x64,node6-macos-x64,node6-win-x64,",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
-    "test": "standard && npm run test-deps && node tests",
-    "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev"
+    "lint": "standard",
+    "test": "standard && npm run test-deps && node tests | tap-spec",
+    "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev",
+    "cover": "istanbul cover tests | tap-spec"
   },
   "bin": {
     "sibyl": "./bin/index.js"
