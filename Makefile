@@ -13,6 +13,9 @@ lint:
 test:
 	npm test
 
+test-deps:
+	npm run test-deps
+
 cover:
 	npm run cover
 
