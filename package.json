@@ -6,16 +6,11 @@
     "build": "NODE_ENV=production bankai build client/index.js --verbose",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
-    "inspect": "NODE_ENV=production bankai inspect client/index.js",
-    "lint": "standard",
-    "test": "standard && tape tests/sibyl.js | tap-spec",
-    "cover": "istanbul cover tests/sibyl.js | tap-spec",
-    "serve": "node server/server.js | merry",
-    "start": "PORT=3000 TOKEN_SECRET='mysecret' nodemon --ignore dist/ --ignore client/ --ignore bundles/ server/server.js | merry",
-    "watch": "bankai build --watch client/index.js dist/"
+    "test": "standard && npm run test-deps && node tests",
+    "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev"
   },
   "bin": {
-    "sibyl": "./sibyl.sh"
+    "sibyl": "./bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,23 +23,14 @@
   },
   "homepage": "https://github.com/stencila/sibyl#readme",
   "dependencies": {
-    "array-lru": "^1.1.1",
-    "bankai": "^8.0.0",
-    "cache-component": "^5.0.0-1",
-    "choo": "^6.0.0-2",
-    "choo-expose": "^1.0.1",
-    "choo-log": "^7.0.0-0",
-    "cookie": "^0.3.1",
+    "async-collection": "^1.0.1",
     "copy-dir": "^0.3.0",
-    "end-of-stream": "^1.4.0",
-    "fast-json-parse": "^1.0.2",
+    "dockerode": "^2.5.0",
+    "explain-error": "^1.0.4",
+    "fixed-size-chunk-hashing": "^1.0.0",
     "gunzip-maybe": "^1.4.1",
-    "jsonwebtoken": "^7.4.1",
-    "merry": "^5.2.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "on-idle": "^3.1.0",
-    "parse-formdata": "^1.0.1",
     "pump": "^1.0.2",
     "request": "^2.81.0",
     "send": "^0.15.2",
@@ -57,9 +43,11 @@
     "tar-filter-stream": "^1.0.0",
     "tar-fs": "^1.15.3",
     "uuid": "^3.1.0",
-    "xhr": "^2.4.0"
+    "xhr": "^2.4.0",
+    "tar-fs": "^1.15.3"
   },
   "devDependencies": {
+    "dependency-check": "^2.6.1",
     "istanbul": "^0.4.5",
     "minidocs": "^4.2.3",
     "nodemon": "^1.11.0",

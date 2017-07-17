@@ -4,7 +4,7 @@ var spok = require('spok')
 var uuid = require('uuid')
 var fs = require('fs')
 
-var Sibyl = require('../lib/sibyl')
+var Sibyl = require('../')
 
 tape('fetch should error for unknown protocol', function (assert) {
   assert.plan(2)
