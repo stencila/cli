@@ -2,15 +2,15 @@ var minimist = require('minimist')
 
 var usage = `
   Usage:
-    $ sibyl launch <value> [options]
+    $ sibyl run <value> [options]
 
   Options:
     -h, --help   Print usage
 `
 
-module.exports = launch
+module.exports = run
 
-function launch (argv) {
+function run (argv) {
   argv = minimist(argv, {
     alias: { help: 'h' }
   })
