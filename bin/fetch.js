@@ -26,7 +26,7 @@ function fetch (argv) {
     console.log('Please provide a valid address.')
     console.log(usage)
   } else {
-    var Sibyl = require('../lib/sibyl')
+    var Sibyl = require('../')
     var sibyl = Sibyl()
     sibyl.fetch(address)
   }

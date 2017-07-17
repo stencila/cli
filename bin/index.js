@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 
 var minimist = require('minimist')
-var path = require('path')
+
+var subcommands = {
+  build: require('./build'),
+  check: require('./check'),
+  compile: require('./compile'),
+  fetch: require('./fetch'),
+  open: require('./open'),
+  run: require('./run')
+}
 
 var commands = [ 'fetch', 'check', 'compile', 'build', 'run', 'open' ]
 var argv = minimist(process.argv.slice(2), {
@@ -42,7 +50,7 @@ var usage = `
     console.log('Please provide a valid command from the list below.')
     console.log(usage)
   } else {
-    var sub = require(path.join(__dirname, subcommand))
+    var sub = subcommands[subcommand]
     sub(process.argv.slice(3))
   }
 })(argv)

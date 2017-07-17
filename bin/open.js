@@ -25,7 +25,7 @@ function open (argv) {
   if (argv.help) {
     console.log(usage)
   } else {
-    var Sibyl = require('../lib/sibyl')
+    var Sibyl = require('..')
     var sibyl = Sibyl()
     sibyl.open(address, function (err) {
       if (err) console.log(err.message)
