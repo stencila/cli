@@ -22,12 +22,11 @@ function fetch (argv) {
   var address = argv._[0]
   if (argv.help) {
     console.log(usage)
-  } else if (address === undefined) {
-    console.log('Please provide a valid address.')
-    console.log(usage)
   } else {
     var Sibyl = require('../')
     var sibyl = Sibyl()
-    sibyl.fetch(address)
+    sibyl.fetch(address, function (err) {
+      if (err) console.log(err.message)
+    })
   }
 }

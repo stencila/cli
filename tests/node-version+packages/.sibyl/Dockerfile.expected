@@ -1,6 +1,0 @@
-FROM stencila/iota
-COPY . .
-RUN curl -s "https://deb.nodesource.com/node_7.x/pool/main/n/nodejs/nodejs_7.9.0-1nodesource1~xenial1_amd64.deb" > node.deb \
- && dpkg -i node.deb \
- && rm node.deb
-RUN cat ".sibyl/node-requires.txt" | xargs npm install

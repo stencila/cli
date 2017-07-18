@@ -1,5 +1,0 @@
-options(repos=structure(c(CRAN='https://cran.rstudio.com')))
-install.packages('devtools')
-
-devtools::install_github('stencila/r')
-stencila:::install()

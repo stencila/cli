@@ -1,9 +1,0 @@
-{
-	"engines": {
-		"node": "7.9.0"
-	},
-	"dependencies": {
-		"to-camel-case": "1.0.0",
-		"is-number": "3.0.0"
-	}
-}

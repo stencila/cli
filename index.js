@@ -1,17 +1,19 @@
 var Emitter = require('events').EventEmitter
-var spawn = require('child_process').spawn
-var gunzip = require('gunzip-maybe')
-var request = require('request')
-var copy = require('copy-dir')
 var assert = require('assert')
-var split = require('split2')
-var tar = require('tar-fs')
 var path = require('path')
-var pump = require('pump')
 var fs = require('fs')
 var mkdirp = require('mkdirp')
-var sha1 = require('sha1')
+var crypto = require('crypto')
 var slug = require('slug')
+
+var fetch = require('./lib/fetch')
+/* eslint-disable */
+var check = require('./lib/check')
+var compile = require('./lib/compile')
+var build = require('./lib/build')
+var run = require('./lib/run')
+var open = require('./lib/open')
+/* eslint-enable */
 
 module.exports = Sibyl
 
@@ -27,43 +29,23 @@ Sibyl.prototype = Object.create(Emitter.prototype)
 Sibyl.prototype.fetch = function (address, cb) {
   this.emit('fetch')
 
-  assert.equal(typeof address, 'string', 'sibyl.fetch: address should be type string')
   assert.equal(typeof cb, 'function', 'sibyl.fetch: cb should be type function')
 
-  var match = address.match(/^([\w]+):\/\/(.*)/)
-  var protocol = match ? match[1] : null
-  var location = match ? match[2] : null
-
-  if (!location) cb(new Error('No location provided'))
-  else this._fetch(protocol, location, null, cb)
-}
-
-Sibyl.prototype.check = function (address, cb) {
-  assert.equal(typeof address, 'string', 'sibyl.check: address should be type string')
-  assert.equal(typeof cb, 'function', 'sibyl.check: cb should be type function')
-
-  var regexes = [
-    /^main*./,
-    /^index*./,
-    /^README*./i
-  ]
-
-  fs.readdir(address, function (err, dir) {
-    if (err) return cb(err)
-
-    var error
-    regexes.forEach(function (regex) {
-      if (error) return
-      var count = dir.reduce(function (count, file) {
-        if (error) return
-        return count + regex.test(file)
-      }, 0)
-      if (count === 0) {
-        error = new Error('No match found for ' + regex.toString())
-        cb(error)
-      }
-    })
-    cb()
+  this._initialize(address, (err, protocol, location, version) => {
+    if (err) cb(err)
+    else {
+      fetch(protocol, location, version, this.directory, (err) => {
+        if (err) cb(err)
+        else {
+          this.config = {
+            protocol: protocol,
+            location: location,
+            version: version
+          }
+          this._finalize(cb)
+        }
+      })
+    }
   })
 }
 
@@ -73,13 +55,28 @@ Sibyl.prototype.open = function (address, cb) {
   assert.equal(typeof cb, 'function', 'sibyl.open: cb should be type function')
 
   this._initialize(address, (err, protocol, location, version) => {
-    if (err) cb(err)
-    else {
-      this._fetch(protocol, location, version, (err) => {
-        if (err) cb(err)
-        else this._finalize(cb)
+    if (err) return cb(err)
+    var directory = this.directory
+    var name = this.name
+    fetch(protocol, location, version, directory, (err) => {
+      if (err) return cb(err)
+      compile(directory, function (err) {
+        if (err) return cb(err)
+        build(directory, name, function (err) {
+          if (err) return cb(err)
+          run(name, function (err, data) {
+            if (err) return cb(err)
+            open(`http://localhost:${data.port}`)
+          })
+        })
       })
-    }
+      this.config = {
+        protocol: protocol,
+        location: location,
+        version: version
+      }
+      this._finalize(cb)
+    })
   })
 }
 
@@ -99,15 +96,18 @@ Sibyl.prototype._initialize = function (address, cb) {
   }
 
   this.directory = process.cwd()
+
+  this.name = slug(protocol + '-' + location.replace(/[:/]/g, '-'))
+  // Add SHA to reduce chance of collision caused by slugging
+  var sha256 = crypto.createHash('sha256')
+  sha256.update(location)
+  this.name += '-' + sha256.digest('hex').substring(0, 6)
+
   var configDir = path.join(this.directory, '.sibyl')
   fs.access(configDir, fs.constants.R_OK, (err) => {
     if (err) {
       if (location) {
-        // Create a new bundle as a child of the current directory
-        // SHA1 added to name to reduce chance of collisions caused by replacement of characters
-        // during slugging
-        var name = slug(protocol + '-' + location.replace(/[:/]/g, '-')) + '-' + sha1(location).substring(0, 6)
-        var directory = path.join(process.cwd(), name)
+        var directory = path.join(process.cwd(), this.name)
         fs.access(directory, fs.constants.R_OK, (err) => {
           if (err) {
             mkdirp(directory, (err) => {
@@ -134,8 +134,7 @@ Sibyl.prototype._initialize = function (address, cb) {
   var readConfig = () => {
     var configFile = path.join(this.directory, '.sibyl', 'config.json')
     fs.readFile(configFile, 'utf8', (err, data) => {
-      if (err) cb(err)
-      else {
+      if (!err) {
         this.config = JSON.parse(data)
         if (location) {
           // Check that user is not trying to change the address
@@ -147,8 +146,8 @@ Sibyl.prototype._initialize = function (address, cb) {
           protocol = this.config.protocol
           location = this.config.location
         }
-        cb(null, protocol, location, version)
       }
+      cb(null, protocol, location, version)
     })
   }
 }
@@ -163,86 +162,4 @@ Sibyl.prototype._finalize = function (cb) {
       fs.writeFile(configFile, data, cb)
     }
   })
-}
-
-Sibyl.prototype._fetch = function (protocol, location, version, cb) {
-  var call = (func) => {
-    func.call(this, location, version, (err) => {
-      if (err) cb(err)
-      else {
-        this.config = {
-          protocol: protocol,
-          location: location,
-          version: version
-        }
-        cb()
-      }
-    })
-  }
-  if (protocol === null) call(this._fetchNull)
-  else if (protocol === 'file') call(this._fetchFile)
-  else if (protocol === 'github') call(this._fetchGithub)
-  else if (protocol === 'dropbox') call(this._fetchDropbox)
-  else if (protocol === 'dat') call(this._fetchDat)
-  else cb(new Error('Unknown protocol: ' + protocol))
-}
-
-Sibyl.prototype._fetchNull = function (location, version, cb) {
-  if (version !== null) cb(new Error('It is invalid to specify a version for a bundle fetched from current directory'))
-  else cb()
-}
-
-Sibyl.prototype._fetchFile = function (location, version, cb) {
-  if (version !== null) return cb(new Error('It is invalid to specify a version with the file:// protocol'))
-
-  var source, sink
-  if (/\.gzip|gz|tar\.gz|tgz|tar$/.test(location)) {
-    source = fs.createReadStream(location)
-    sink = tar.extract(this.directory)
-    pump(source, gunzip(), sink, cb)
-  } else {
-    copy(location, this.directory, cb)
-  }
-}
-
-Sibyl.prototype._fetchGithub = function (location, version, cb) {
-  var gh = parseGithubAddress(location)
-  var ref = version === null ? 'master' : version
-  var uri = `https://github.com/${gh.user}/${gh.repo}/tarball/${ref}`
-  var source = request.get(uri)
-  var sink = fs.createWriteStream(this.directory)
-  pump(source, gunzip(), sink, cb)
-}
-
-Sibyl.prototype._fetchDropbox = function (location, version, cb) {
-  if (version !== null) return cb(new Error('It is invalid to specify a version with the dropbox:// protocol'))
-
-  var uri = `https://dropbox.com/sh/${location}?dl=1`
-  var source = request.get(uri)
-  var sink = tar.extract(this.directory)
-  pump(source, gunzip(), sink, cb)
-}
-
-Sibyl.prototype._fetchDat = function (location, version, cb) {
-  var child = spawn('dat', [ location, '.', '--exit' ])
-  var sink = fs.createWriteStream(this.directory)
-  pump(child.stdout, indent, sink, cb)
-}
-
-function indent () {
-  return split(function (chunk) {
-    return '\n  ' + chunk
-  })
-}
-
-function parseGithubAddress (address) {
-  var regex = /^([^/]+?)\/([^/]+)(\/(.+))/
-  var match = regex.exec(address)
-  if (!match) return new Error('No match found')
-
-  return {
-    user: match[1],
-    repo: match[2],
-    dir: match[3]
-  }
 }
