@@ -1,2 +1,1 @@
 require('./fetch')
-require('./build')

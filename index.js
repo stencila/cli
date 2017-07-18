@@ -1,13 +1,6 @@
 var Emitter = require('events').EventEmitter
-var spawn = require('child_process').spawn
-var gunzip = require('gunzip-maybe')
-var request = require('request')
-var copy = require('copy-dir')
 var assert = require('assert')
-var split = require('split2')
-var tar = require('tar-fs')
 var path = require('path')
-var pump = require('pump')
 var fs = require('fs')
 var mkdirp = require('mkdirp')
 var sha1 = require('sha1')
@@ -178,71 +171,5 @@ Sibyl.prototype._fetch = function (protocol, location, version, cb) {
         cb()
       }
     })
-  }
-  if (protocol === null) call(this._fetchNull)
-  else if (protocol === 'file') call(this._fetchFile)
-  else if (protocol === 'github') call(this._fetchGithub)
-  else if (protocol === 'dropbox') call(this._fetchDropbox)
-  else if (protocol === 'dat') call(this._fetchDat)
-  else cb(new Error('Unknown protocol: ' + protocol))
-}
-
-Sibyl.prototype._fetchNull = function (location, version, cb) {
-  if (version !== null) cb(new Error('It is invalid to specify a version for a bundle fetched from current directory'))
-  else cb()
-}
-
-Sibyl.prototype._fetchFile = function (location, version, cb) {
-  if (version !== null) return cb(new Error('It is invalid to specify a version with the file:// protocol'))
-
-  var source, sink
-  if (/\.gzip|gz|tar\.gz|tgz|tar$/.test(location)) {
-    source = fs.createReadStream(location)
-    sink = tar.extract(this.directory)
-    pump(source, gunzip(), sink, cb)
-  } else {
-    copy(location, this.directory, cb)
-  }
-}
-
-Sibyl.prototype._fetchGithub = function (location, version, cb) {
-  var gh = parseGithubAddress(location)
-  var ref = version === null ? 'master' : version
-  var uri = `https://github.com/${gh.user}/${gh.repo}/tarball/${ref}`
-  var source = request.get(uri)
-  var sink = fs.createWriteStream(this.directory)
-  pump(source, gunzip(), sink, cb)
-}
-
-Sibyl.prototype._fetchDropbox = function (location, version, cb) {
-  if (version !== null) return cb(new Error('It is invalid to specify a version with the dropbox:// protocol'))
-
-  var uri = `https://dropbox.com/sh/${location}?dl=1`
-  var source = request.get(uri)
-  var sink = tar.extract(this.directory)
-  pump(source, gunzip(), sink, cb)
-}
-
-Sibyl.prototype._fetchDat = function (location, version, cb) {
-  var child = spawn('dat', [ location, '.', '--exit' ])
-  var sink = fs.createWriteStream(this.directory)
-  pump(child.stdout, indent, sink, cb)
-}
-
-function indent () {
-  return split(function (chunk) {
-    return '\n  ' + chunk
-  })
-}
-
-function parseGithubAddress (address) {
-  var regex = /^([^/]+?)\/([^/]+)(\/(.+))/
-  var match = regex.exec(address)
-  if (!match) return new Error('No match found')
-
-  return {
-    user: match[1],
-    repo: match[2],
-    dir: match[3]
   }
 }
