@@ -3,7 +3,7 @@ var assert = require('assert')
 var path = require('path')
 var fs = require('fs')
 var mkdirp = require('mkdirp')
-var sha256 = require('sha256')
+var crypto = require('crypto')
 var slug = require('slug')
 
 var fetch = require('./lib/fetch')
@@ -96,7 +96,12 @@ Sibyl.prototype._initialize = function (address, cb) {
   }
 
   this.directory = process.cwd()
-  this.name = slug(protocol + '-' + location.replace(/[:/]/g, '-')) + '-' + sha256(location).substring(0, 6)
+
+  this.name = slug(protocol + '-' + location.replace(/[:/]/g, '-'))
+  // Add SHA to reduce chance of collision caused by slugging
+  var sha256 = crypto.createHash('sha256')
+  sha256.update(location)
+  this.name += '-' + sha256.digest('hex').substring(0, 6)
 
   var configDir = path.join(this.directory, '.sibyl')
   fs.access(configDir, fs.constants.R_OK, (err) => {
