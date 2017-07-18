@@ -7,6 +7,13 @@ var sha1 = require('sha1')
 var slug = require('slug')
 
 var fetch = require('./lib/fetch')
+/* eslint-disable */
+var check = require('./lib/check')
+var compile = require('./lib/compile')
+var build = require('./lib/build')
+var run = require('./lib/run')
+var open = require('./lib/open')
+/* eslint-enable */
 
 module.exports = Sibyl
 
