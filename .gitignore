@@ -1,12 +1,6 @@
-build
-bundles
-coverage
-node_modules
-secrets
-npm-debug.log
-
-# Ignore files generated in tests but not `.expected` files
-tests/*/.sibyl/*
-!tests/*/.sibyl/*.expected
+build/
+coverage/
 dist/
+node_modules/
+npm-debug.log
 tmp
