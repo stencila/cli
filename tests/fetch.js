@@ -63,7 +63,7 @@ tape('should fetch from a Github repo', function (assert) {
     fetch('github', 'stencila/examples/diamonds', 'master', directory, function (err, res) {
       assert.ifError(err, 'no error')
       var files = fs.readdirSync(directory)
-      spok(assert, files, [ 'README.md', 'data.csv' ])
+      spok(assert, files, [ 'LICENSE', 'README.md' ])
       assert.end()
     })
   })
