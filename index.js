@@ -6,6 +6,8 @@ var mkdirp = require('mkdirp')
 var sha1 = require('sha1')
 var slug = require('slug')
 
+var fetch = require('./lib/fetch')
+
 module.exports = Sibyl
 
 function Sibyl (opts) {
@@ -20,15 +22,24 @@ Sibyl.prototype = Object.create(Emitter.prototype)
 Sibyl.prototype.fetch = function (address, cb) {
   this.emit('fetch')
 
-  assert.equal(typeof address, 'string', 'sibyl.fetch: address should be type string')
   assert.equal(typeof cb, 'function', 'sibyl.fetch: cb should be type function')
 
-  var match = address.match(/^([\w]+):\/\/(.*)/)
-  var protocol = match ? match[1] : null
-  var location = match ? match[2] : null
-
-  if (!location) cb(new Error('No location provided'))
-  else this._fetch(protocol, location, null, cb)
+  this._initialize(address, (err, protocol, location, version) => {
+    if (err) cb(err)
+    else {
+      fetch(protocol, location, version, this.directory, (err) => {
+        if (err) cb(err)
+        else {
+          this.config = {
+            protocol: protocol,
+            location: location,
+            version: version
+          }
+          this._finalize(cb)
+        }
+      })
+    }
+  })
 }
 
 Sibyl.prototype.check = function (address, cb) {
@@ -127,8 +138,7 @@ Sibyl.prototype._initialize = function (address, cb) {
   var readConfig = () => {
     var configFile = path.join(this.directory, '.sibyl', 'config.json')
     fs.readFile(configFile, 'utf8', (err, data) => {
-      if (err) cb(err)
-      else {
+      if (!err) {
         this.config = JSON.parse(data)
         if (location) {
           // Check that user is not trying to change the address
@@ -140,8 +150,8 @@ Sibyl.prototype._initialize = function (address, cb) {
           protocol = this.config.protocol
           location = this.config.location
         }
-        cb(null, protocol, location, version)
       }
+      cb(null, protocol, location, version)
     })
   }
 }
@@ -156,20 +166,4 @@ Sibyl.prototype._finalize = function (cb) {
       fs.writeFile(configFile, data, cb)
     }
   })
-}
-
-Sibyl.prototype._fetch = function (protocol, location, version, cb) {
-  var call = (func) => {
-    func.call(this, location, version, (err) => {
-      if (err) cb(err)
-      else {
-        this.config = {
-          protocol: protocol,
-          location: location,
-          version: version
-        }
-        cb()
-      }
-    })
-  }
 }
