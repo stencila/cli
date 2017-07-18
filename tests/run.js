@@ -2,7 +2,7 @@ var tape = require('tape')
 
 var run = require('../lib/run')
 
-tape('run should run a container', function (assert) {
+tape.skip('run should run a container', function (assert) {
   assert.plan(6)
   run('stencila/alpha', function (err, res) {
     assert.ifError(err, 'no err')
