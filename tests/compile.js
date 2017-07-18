@@ -24,7 +24,7 @@ function compileDockerfile (source, cb) {
 tape('compile should produce default Dockerfile for bundles with no requirements', function (assert) {
   compileDockerfile(path.join(__dirname, 'fixtures', 'hello'), function (err, dockerfile) {
     assert.ifError(err, 'no error')
-    assert.equal(dockerfile, 'FROM stencila/alpha\nCOPY . .')
+    assert.equal(dockerfile, compile.defaults['Dockerfile'])
     assert.end()
   })
 })
