@@ -1,2 +1,0 @@
-FROM stencila/iota
-COPY . .

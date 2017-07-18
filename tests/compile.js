@@ -6,19 +6,33 @@ var tmp = require('tmp')
 var fetch = require('../lib/fetch')
 var compile = require('../lib/compile')
 
-tape('compile should produce default Dockerfile for empty bundles', function (assert) {
+// Creates a temp dir, fetches the test fixture and compiles
+// a Dockerfile
+function compileDockerfile (source, cb) {
   tmp.dir(function (err, directory) {
-    if (err) throw err
-    fetch('file', path.join(__dirname, 'fixtures', 'empty'), null, directory, function (err, res) {
-      assert.ifError(err, 'no error')
+    if (err) return cb(err)
+    fetch('file', source, null, directory, function (err, res) {
+      if (err) return cb(err)
       compile(directory, function (err) {
-        assert.ifError(err, 'no error')
-        fs.readFile(path.join(directory, 'Dockerfile'), 'utf8', function (err, data) {
-          assert.ifError(err, 'no error')
-          assert.equal(data, 'FROM stencila/alpha\nCOPY . .')
-          assert.end()
-        })
+        if (err) return cb(err)
+        fs.readFile(path.join(directory, 'Dockerfile'), 'utf8', cb)
       })
     })
+  })
+}
+
+tape('compile should produce default Dockerfile for empty bundles', function (assert) {
+  compileDockerfile(path.join(__dirname, 'fixtures', 'empty'), function (err, dockerfile) {
+    assert.ifError(err, 'no error')
+    assert.equal(dockerfile, 'FROM stencila/alpha\nCOPY . .')
+    assert.end()
+  })
+})
+
+tape('compile should not override existing Dockerfile', function (assert) {
+  compileDockerfile(path.join(__dirname, 'fixtures', 'dockerfile'), function (err, dockerfile) {
+    assert.ifError(err, 'no error')
+    assert.equal(dockerfile, '# A custom Dockerfile provided by the user\n\nFROM stencila/iota\n')
+    assert.end()
   })
 })
