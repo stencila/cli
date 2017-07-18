@@ -38,7 +38,7 @@
     "request": "^2.81.0",
     "slug": "^0.9.1",
     "tar-fs": "^1.15.3",
-    "unzipper": "^0.8.9"
+    "unzip-stream": "^0.1.2"
   },
   "devDependencies": {
     "debug": "^2.6.8",
