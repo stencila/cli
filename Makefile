@@ -20,7 +20,7 @@ cover:
 	npm run cover
 
 build:
-	npm build
+	npm run build
 
 
 docs-build:
