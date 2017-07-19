@@ -15,7 +15,8 @@ This is a small example Stencila document, stored as [Markdown in a Github repos
 
 We analysed the [diamonds data set](http://ggplot2.tidyverse.org/reference/diamonds.html) which contains the prices, carat, colour and other attributes of almost 54,000 diamonds. This data is also available in the Github repo as a [csv file](https://github.com/stencila/examples/diamonds/data.csv). A random sample of [1000]{name=sample_size type=range min=100 max=10000 step=100} diamonds was taken from the data (using Python).
 
-```data=call(sample_size){py}
+```py
+#! data = (sample_size)
 return pandas.read_csv('data.csv').sample(sample_size)
 ```
 
@@ -23,13 +24,15 @@ return pandas.read_csv('data.csv').sample(sample_size)
 
 We calculated the number and mean price of diamonds in each color category: J (worst) to D (best) (using SQLite).
 
-```summary=call(data){sqlite}
+```sql
+--! summary = (data)
 SELECT color, count(*) diamonds, round(avg(price), 2) AS price FROM data GROUP BY color
 ```
 
 We then used R to perform a generalised linear model of diamond price using carat and price as explanatory variables.
 
-```pseudo_r2=call(data){r}
+```r
+#! pseudo_r2 = (data)
 model <- glm(price~carat+color, data=data)
 round(1-model$deviance/model$null.deviance,2)
 ```
@@ -38,7 +41,8 @@ round(1-model$deviance/model$null.deviance,2)
 
 The price diamonds is related to both their carat and color (Figure 1, Table 1). The pseudo-R2 for the generalised model using the sample of data was <span data-cell="pseudo_r2"><span>.
 
-```call(data,smoothing){r}
+```r
+#! (data,smoothing)
 ggplot(data, aes(x=carat, y=price, color=color)) + 
     geom_point() + geom_smooth(span=smoothing) + 
     labs(x='Carat', y='Price', color='Color') + theme_bw()
@@ -47,6 +51,6 @@ ggplot(data, aes(x=carat, y=price, color=color)) +
 
 
 **Table 1. The number and mean price of diamonds in each color category.**
-```.
+```mini
 summary
 ```
