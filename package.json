@@ -1,6 +1,6 @@
 {
   "name": "stencila-sibyl",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "Stencila in containers",
   "scripts": {
     "build": "mkdir -p dist && pkg bin/index.js --out-path dist -t node6-linux-x64,node6-macos-x64,node6-win-x64,",
