@@ -2,16 +2,8 @@
 
 var minimist = require('minimist')
 
-var subcommands = {
-  build: require('./build'),
-  check: require('./check'),
-  compile: require('./compile'),
-  fetch: require('./fetch'),
-  open: require('./open'),
-  run: require('./run')
-}
-
 var commands = [ 'fetch', 'check', 'compile', 'build', 'run', 'open' ]
+
 var argv = minimist(process.argv.slice(2), {
   string: commands,
   alias: {
@@ -22,7 +14,7 @@ var argv = minimist(process.argv.slice(2), {
 
 var usage = `
   Usage:
-    $ sibyl <command> [options]
+    $ sibyl <command> [address] [options]
 
   Commands:
     fetch      Fetch a bundle
@@ -37,20 +29,24 @@ var usage = `
     -v, --version           Print version
 
   Examples:
-    sibyl fetch --help    Print usage for the "fetch" command
+    sibyl fetch file://path/archive.tar.gz  # Fetch from the filesystem
+    sibyl open github://user/repo           # Open from github
 `
 
 ;(function main (argv) {
-  var subcommand = argv._[0]
-  if (argv.help && !subcommand) {
+  var command = argv._[0]
+  var address = argv._[1]
+  if (argv.help && !command) {
     console.log(usage)
   } else if (argv.version) {
     console.log(require('../package.json').version)
-  } else if (commands.indexOf(subcommand) === -1) {
+  } else if (commands.indexOf(command) === -1) {
     console.log('Please provide a valid command from the list below.')
     console.log(usage)
   } else {
-    var sub = subcommands[subcommand]
-    sub(process.argv.slice(3))
+    var sibyl = require('../')
+    sibyl(command, address, function (err) {
+      if (err) console.log(err)
+    })
   }
 })(argv)
