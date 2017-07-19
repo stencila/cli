@@ -49,10 +49,17 @@ Sibyl.prototype.fetch = function (address, cb) {
   })
 }
 
-Sibyl.prototype.open = function (address, cb) {
+Sibyl.prototype.open = function (address, opts, cb) {
+  if (!cb) return this.open(address, null, opts)
+  opts = opts || {}
+
   this.emit('open')
 
+  assert.equal(typeof address, 'string', 'sibyl.open: address should be type string')
+  assert.equal(typeof opts, 'object', 'sibyl.open: opts should be type object')
   assert.equal(typeof cb, 'function', 'sibyl.open: cb should be type function')
+
+  // var onKubernetes = opts.kubernetes
 
   this._initialize(address, (err, protocol, location, version) => {
     if (err) return cb(err)
