@@ -45,8 +45,9 @@ var usage = `
     console.log(usage)
   } else {
     var sibyl = require('../')
-    sibyl(command, address, function (err) {
-      if (err) console.log(err)
+    sibyl(command, address, function (err, ...args) {
+      if (err) console.error(err)
+      else console.log(...args)
     })
   }
 })(argv)
