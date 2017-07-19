@@ -13,7 +13,7 @@ function compileDockerfile (source, cb) {
     if (err) return cb(err)
     fetch('file', source, null, directory, function (err, res) {
       if (err) return cb(err)
-      compile(directory, function (err) {
+      compile(directory, null, function (err) {
         if (err) return cb(err)
         fs.readFile(path.join(directory, 'Dockerfile'), 'utf8', cb)
       })
@@ -24,7 +24,7 @@ function compileDockerfile (source, cb) {
 tape('compile should produce default Dockerfile for bundles with no requirements', function (assert) {
   compileDockerfile(path.join(__dirname, 'fixtures', 'hello'), function (err, dockerfile) {
     assert.ifError(err, 'no error')
-    assert.equal(dockerfile, compile.defaults['Dockerfile'])
+    assert.equal(dockerfile, 'FROM stencila/iota\nCOPY . .\n')
     assert.end()
   })
 })

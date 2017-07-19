@@ -13,7 +13,7 @@ function buildImage (fixture, name, cb) {
     if (err) return cb(err)
     fetch('file', fixture, null, directory, function (err, res) {
       if (err) return cb(err)
-      compile(directory, function (err) {
+      compile(directory, null, function (err) {
         if (err) return cb(err)
         build(directory, name, cb)
       })
@@ -22,9 +22,8 @@ function buildImage (fixture, name, cb) {
 }
 
 tape('build should build something', function (assert) {
-  buildImage(path.join(__dirname, 'fixtures', 'diamonds'), 'aardvark:alice', function (err, stream) {
+  buildImage(path.join(__dirname, 'fixtures', 'diamonds'), 'aardvark:alice', function (err) {
     assert.ifError(err, 'no err')
-    stream.pipe(process.stdout)
     assert.end()
   })
 })

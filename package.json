@@ -32,6 +32,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "opn": "^5.1.0",
+    "progress-stream": "^2.0.0",
     "pump": "^1.0.2",
     "random-port": "^0.1.0",
     "request": "^2.81.0",
