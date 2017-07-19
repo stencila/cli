@@ -22,9 +22,8 @@ function buildImage (fixture, name, cb) {
 }
 
 tape('build should build something', function (assert) {
-  buildImage(path.join(__dirname, 'fixtures', 'diamonds'), 'aardvark:alice', function (err, stream) {
+  buildImage(path.join(__dirname, 'fixtures', 'diamonds'), 'aardvark:alice', function (err) {
     assert.ifError(err, 'no err')
-    stream.pipe(process.stdout)
     assert.end()
   })
 })
