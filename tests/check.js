@@ -11,6 +11,6 @@ tape('check should check for main document', function (assert) {
   })
 
   check(path.join(__dirname, 'fixtures', 'main-missing'), function (err) {
-    assert.equal(err.message, 'No main document in bundle')
+    assert.ok(err.message.match(/^No main document in bundle/))
   })
 })

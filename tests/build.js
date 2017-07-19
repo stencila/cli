@@ -13,7 +13,7 @@ function buildImage (fixture, name, cb) {
     if (err) return cb(err)
     fetch('file', fixture, null, directory, function (err, res) {
       if (err) return cb(err)
-      compile(directory, function (err) {
+      compile(directory, null, function (err) {
         if (err) return cb(err)
         build(directory, name, cb)
       })
