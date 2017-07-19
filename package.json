@@ -1,12 +1,13 @@
 {
   "name": "stencila-sibyl",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "Stencila in containers",
   "scripts": {
     "build": "mkdir -p dist && pkg bin/index.js --out-path dist -t node6-linux-x64,node6-macos-x64,node6-win-x64,",
     "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
     "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
     "lint": "standard",
+    "release": "release",
     "test": "standard && npm run test-deps && node tests | tap-spec",
     "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev",
     "cover": "istanbul cover tests | tap-spec"
@@ -48,6 +49,7 @@
     "minidocs": "^4.2.3",
     "nodemon": "^1.11.0",
     "pkg": "^4.1.2",
+    "release": "^1.2.3",
     "split2": "^2.1.1",
     "spok": "^0.8.1",
     "standard": "*",
