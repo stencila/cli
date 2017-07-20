@@ -5,15 +5,16 @@ var tmp = require('tmp')
 
 var fetch = require('../lib/fetch')
 var compile = require('../lib/compile')
+var log = require('./log')
 
 // Creates a temp dir, fetches the test fixture and compiles
 // a Dockerfile
 function compileDockerfile (source, cb) {
   tmp.dir(function (err, directory) {
     if (err) return cb(err)
-    fetch('file', source, null, directory, function (err, res) {
+    fetch('file', source, null, directory, log, function (err, res) {
       if (err) return cb(err)
-      compile(directory, null, function (err) {
+      compile(directory, null, log, function (err) {
         if (err) return cb(err)
         fs.readFile(path.join(directory, 'Dockerfile'), 'utf8', cb)
       })
