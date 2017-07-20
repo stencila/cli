@@ -9,20 +9,20 @@ var finalize = require('./lib/finalize')
 
 module.exports = sibyl
 
-function sibyl (stage, address, output, cb) {
+function sibyl (stage, address, log, cb) {
   initialize(address, function (err, protocol, location, version, directory, name) {
     if (err) stop(err)
-    fetch(protocol, location, version, directory, output, function (err) {
+    fetch(protocol, location, version, directory, log, function (err) {
       if (err || stage === 'fetch') return stop(err, directory)
-      check(directory, output, function (err) {
+      check(directory, log, function (err) {
         if (err || stage === 'check') return stop(err, directory)
-        compile(directory, null, output, function (err) {
+        compile(directory, null, log, function (err) {
           if (err || stage === 'compile') return stop(err, directory)
-          build(directory, name, output, function (err, image) {
+          build(directory, name, log, function (err, image) {
             if (err || stage === 'build') return stop(err, image)
-            run(name, output, function (err, url) {
+            run(image, log, function (err, url) {
               if (err || stage === 'run') return stop(err, url)
-              open(url, output, function (err) {
+              open(url, log, function (err) {
                 stop(err, image, url)
               })
             })

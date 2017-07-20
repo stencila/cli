@@ -5,17 +5,18 @@ var tmp = require('tmp')
 var fetch = require('../lib/fetch')
 var compile = require('../lib/compile')
 var build = require('../lib/build')
+var log = require('./log')
 
 // Creates a temp dir, fetches the test fixture, compiles
 // a Dockerfile and builds a container for it
 function buildImage (fixture, name, cb) {
   tmp.dir(function (err, directory) {
     if (err) return cb(err)
-    fetch('file', fixture, null, directory, function (err, res) {
+    fetch('file', fixture, null, directory, log, function (err, res) {
       if (err) return cb(err)
-      compile(directory, null, function (err) {
+      compile(directory, null, log, function (err) {
         if (err) return cb(err)
-        build(directory, name, cb)
+        build(directory, name, log, cb)
       })
     })
   })
