@@ -28,11 +28,6 @@ Feature                                       | Ready / Issue
 [Node.js](docs/langs/node.md)                 | ✓
 [Python](docs/langs/python.md)                | ✓
 [R](docs/langs/r.md)                          | ✓
-**Images** for running languages              |
-[alpha (α)](docs/images/alpha.md)             | ✓
-[iota (ι)](docs/images/iota.md)               | ✓
-[Customize](docs/images/customize-image.md)   | ✓
-[Contribute](docs/images/contribute-image.md) | ✓
 **Hooks** for triggering builds               |
 Email                                         | [#51](https://github.com/stencila/sibyl/issues/51)
 [Github](docs/hooks/github-hook.md)           | 

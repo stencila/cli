@@ -1,1 +1,0 @@
-../../images/rho/README.md
