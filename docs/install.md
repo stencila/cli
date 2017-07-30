@@ -1,36 +1,8 @@
 # Install
 
-The easiest way to use Sibyl is at http://open.stenci.la . But you might want to run it locally, particularly if your interested in contributing code.
 
-## `sibyl.sh` Bash script
-
-At the heart of Sibyl is the [`sibyl.sh`](https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh) Bash script. You can use it to run most of Sibyl's tasks on your local machine. Download it to somewhere on your `$PATH` and make it executable e.g. on Linux:
-
-```sh
-curl https://raw.githubusercontent.com/stencila/sibyl/master/sibyl.sh > ~/.local/bin/sibyl
-chmod 755 ~/.local/bin/sibyl
-```
-
-`sibyl.sh` requires [`curl`](https://curl.haxx.se/), [`docker`](https://docs.docker.com/engine/installation/), [`jq`](https://stedolan.github.io/jq/) and `netstat` to be installed.
-
-Use `sibyl.sh` with a task name and bundle "address" e.g. 
-
-```sh
-sibyl launch github://stencila/test`
-```
-
-or, in an existing bundle directory
-
-```
-sibyl launch
-```
-
-To get closer to a production scenario you can set up and use a local private Docker registry:
-
-```sh
 docker run --detach --net sibyl-net --name sibyl-registry --rm --publish 5000:5000 registry:2
 SIBYL_REGISTRY=localhost:5000 sibyl launch
-```
 
 
 ## `stencila-sibyl` Node.js package

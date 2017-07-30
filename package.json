@@ -27,6 +27,8 @@
   "homepage": "https://github.com/stencila/sibyl#readme",
   "dependencies": {
     "chalk": "^2.0.1",
+    "stencila-node": "0.27.5",
+    
     "copy-dir": "^0.3.0",
     "dockerode": "^2.5.0",
     "explain-error": "^1.0.4",
