@@ -1,5 +1,0 @@
-require('./fetch')
-require('./check')
-require('./compile')
-require('./build')
-require('./run')

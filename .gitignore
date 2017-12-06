@@ -1,6 +1,4 @@
-build/
+.nyc_output/
 coverage/
-dist/
+build/
 node_modules/
-npm-debug.log
-tmp

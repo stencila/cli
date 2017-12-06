@@ -1,14 +1,34 @@
 language: node_js
-node_js:
-  - "6"
 
-services:
-  - docker
+node_js:
+  - 8
+
+cache:
+  directories:
+    - node_modules
 
 script:
-  - make lint
-  - make test-deps
-  - make cover
+  - npm run lint
+  - npm run test-deps
+  - npm run cover
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - npm run build
+
+before_deploy:
+  - tar --transform "s|build/stencila-linux|stencila|" -czvf build/stencila-linux-x64.tar.gz build/stencila-linux
+  - tar --transform "s|build/stencila-macos|stencila|" -czvf build/stencila-macos-x64.tar.gz build/stencila-macos
+  - mv build/stencila-win.exe build/stencila.exe ; zip -j build/stencila-win-x64.zip build/stencila.exe
+
+deploy:
+  on:
+    tags: true
+  provider: releases
+  api_key:
+    secure: YOUR_API_KEY_ENCRYPTED
+  file:
+    - "build/stencila-linux-x64.tar.gz"
+    - "build/stencila-macos-x64.tar.gz"
+    - "build/stencila-win-x64.zip"
+  skip_cleanup: true

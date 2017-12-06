@@ -1,65 +1,41 @@
 {
-  "name": "stencila-sibyl",
-  "version": "0.26.1",
-  "description": "Stencila in containers",
+  "name": "stencila-cli",
+  "version": "0.29.0",
+  "description": "Stencila CLI (command line interface)",
   "scripts": {
-    "build": "mkdir -p dist && pkg bin/index.js --out-path dist -t node6-linux-x64,node6-macos-x64,node6-win-x64,",
-    "docs-build": "minidocs docs/ --assets docs/assets --css docs/styles.css --logo docs/logo.svg --contents docs/contents.json ---pushstate --output build/docs/",
-    "docs-publish": "surge --domain sibyl.surge.sh build/docs/",
+    "build": "mkdirp build && pkg bin/stencila.js --out-path build -t node8-linux-x64,node8-macos-x64,node8-win-x64",
     "lint": "standard",
     "release": "release",
-    "test": "standard && npm run test-deps && node tests | tap-spec",
+    "test": "tape \"test/**/*.test.js\" | tap-spec",
     "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev",
-    "cover": "istanbul cover tests | tap-spec"
+    "cover": "nyc --reporter=lcov --reporter=text npm test",
+    "clean": "rimraf coverage build"
   },
   "bin": {
-    "sibyl": "./bin/index.js"
+    "stencila": "./bin/stencila.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stencila/sibyl.git"
+    "url": "git+https://github.com/stencila/cli.git"
   },
-  "author": "https://github.com/stencila/sibyl/graphs/contributors",
+  "author": "https://github.com/stencila/cli/graphs/contributors",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/stencila/sibyl/issues"
+    "url": "https://github.com/stencila/cli/issues"
   },
-  "homepage": "https://github.com/stencila/sibyl#readme",
+  "homepage": "https://github.com/stencila/cli#readme",
   "dependencies": {
-    "chalk": "^2.0.1",
-    "stencila-node": "0.27.5",
-    
-    "copy-dir": "^0.3.0",
-    "dockerode": "^2.5.0",
-    "explain-error": "^1.0.4",
-    "filesize": "^3.5.10",
-    "gunzip-maybe": "^1.4.1",
-    "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
-    "moment": "^2.18.1",
-    "opn": "^5.1.0",
-    "progress-stream": "^2.0.0",
-    "pump": "^1.0.2",
-    "random-port": "^0.1.0",
-    "request": "^2.81.0",
-    "slug": "^0.9.1",
-    "strip-dirs": "^2.0.0",
-    "tar-fs": "^1.15.3",
-    "unzip-stream": "^0.1.2"
+    "caporal": "^0.9.0"
   },
   "devDependencies": {
-    "debug": "^2.6.8",
-    "dependency-check": "^2.6.1",
-    "istanbul": "^0.4.5",
-    "minidocs": "^4.2.3",
-    "nodemon": "^1.11.0",
-    "pkg": "^4.1.2",
-    "release": "^1.2.3",
-    "split2": "^2.1.1",
-    "spok": "^0.8.1",
-    "standard": "*",
+    "dependency-check": "^2.9.1",
+    "mkdirp": "^0.5.1",
+    "nyc": "^11.3.0",
+    "pkg": "^4.3.0-beta.1",
+    "release": "^3.0.2",
+    "rimraf": "^2.6.2",
+    "standard": "^10.0.3",
     "tap-spec": "^4.1.1",
-    "tape": "^4.6.3",
-    "tmp": "0.0.31"
+    "tape": "^4.8.0"
   }
 }
