@@ -7,7 +7,7 @@
     "lint": "standard",
     "release": "release",
     "test": "tape \"test/**/*.test.js\" | tap-spec",
-    "test-deps": "dependency-check . && dependency-check --extra . --entry bin/index.js --no-dev",
+    "test-deps": "dependency-check . && dependency-check --extra . --entry bin/stencila.js --no-dev",
     "cover": "nyc --reporter=lcov --reporter=text npm test",
     "clean": "rimraf coverage build"
   },
