@@ -26,9 +26,9 @@ deploy:
     tags: true
   provider: releases
   api_key:
-    secure: YOUR_API_KEY_ENCRYPTED
+    secure: "lhwXNRW1oJfUINxcDmJ0vp6sIiuB4BGaLiAaBArAiovCfPrqb+c+T+gALpLSxpWCl6gGm99wNjaOLS0SGI4xg88833ZScm0Y+qDaGUgxGSvy//GVFmqxoMImyg4MKEKaTAkOLr60OEdfSor0pLkxPCmf0NRG8LATKLsyIJ6eG0kr7tRW7KdeegCeWZNpGvycLmql4WSRS/f+229CXrsALwxn46eGbNoGTHiAP+dKrTalqFEgpkvxDpPmUy9ou4m8CMIEZhZbu7T/zr2zqo0vhPoeL1a/3lAxyRJJHYwxUkAED6QPRxy+VDG14YrMtGV1yuPxInbt910jPofp2Gi2R12/tYrBTSHOjcDd+qZ0sm7rDR4lHVnXWEL9okQlnmRVD++sQb7OwRvBQpztsi8BrDICLIoLwO54kofinht6ClABZg9CcTVSUj/61VvO+Ud+eFO+9VX623TFwXGG2tQ8U5q6gn71siLf6BPAJdatM9kHXQ6ecB8KIZvPK5+gDv/sDWpHGkL1E6AsSNFvWiH4ACuqOD6gYw2sNd1wmfTH2cJ3AywBnJUdBukVXXpan19lGUv6vF5zZ50l9Tq1fU5v8wzNh5CUeWBXNujAYEU5nzhkMiBJIIt+K/SrIg3KEi7+UnhsJjA9Y7kwYJfmEFQbMQgEpqPhl9T+oFTb4fNKm9g="
   file:
-    - "build/stencila-linux-x64.tar.gz"
-    - "build/stencila-macos-x64.tar.gz"
-    - "build/stencila-win-x64.zip"
+    - build/stencila-linux-x64.tar.gz
+    - build/stencila-macos-x64.tar.gz
+    - build/stencila-win-x64.zip
   skip_cleanup: true
