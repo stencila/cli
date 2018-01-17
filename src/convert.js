@@ -2,11 +2,11 @@ const convert_ = require('stencila-convert').convert
 
 function convert (args, options, logger) {
   let {from, to} = args
-  logger.debug(`convert("${from}", "${to}"): started`)
+  logger.debug(`Converting "${from}" to "${to}"`)
   return convert_(from, to).then(() => {
-    logger.debug(`convert("${from}", "${to}"): finished`)
+    logger.ok(`Success converting "${from}" to "${to}"`)
   }).catch((err) => {
-    logger.error(err.message)
+    logger.error(`Error converting "${from}" to "${to}": ${err.message}`)
   })
 }
 
