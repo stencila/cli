@@ -2,3 +2,4 @@
 coverage/
 build/
 node_modules/
+test/outputs/
