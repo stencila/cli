@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/stencila/cli#readme",
   "dependencies": {
-    "caporal": "^0.9.0"
+    "caporal": "^0.9.0",
+    "chalk": "^2.3.0",
+    "stencila-convert": "^0.29.0"
   },
   "devDependencies": {
     "dependency-check": "^2.9.1",
