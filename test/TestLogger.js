@@ -8,6 +8,9 @@ class TestLogger {
   info (message) {
     this.messages.push(['info', message])
   }
+  ok (message) {
+    this.messages.push(['ok', message])
+  }
   warn (message) {
     this.messages.push(['warn', message])
   }
@@ -16,4 +19,4 @@ class TestLogger {
   }
 }
 
-module.exports = new TestLogger()
+module.exports = TestLogger
