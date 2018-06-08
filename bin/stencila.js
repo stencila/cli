@@ -12,8 +12,8 @@ cli
   .logger(logger)
 
   .command('convert', 'Convert files or folders to other formats')
-    .argument('[from]', 'File/folder to convert from', null, '.')
-    .argument('[to]', 'File/folder to convert to', null)
-    .action(convert)
+  .argument('[from]', 'File/folder to convert from', null, '.')
+  .argument('[to]', 'File/folder to convert to', null)
+  .action(convert)
 
 cli.parse(process.argv)
