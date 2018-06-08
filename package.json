@@ -27,7 +27,7 @@
   "dependencies": {
     "caporal": "^0.9.0",
     "chalk": "^2.3.0",
-    "stencila-node": "^0.28.2",
+    "stencila-convert": "stencila/convert",
     "winston": "^2.4.0"
   },
   "devDependencies": {

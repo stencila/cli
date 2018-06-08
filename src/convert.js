@@ -1,4 +1,4 @@
-const convert_ = require('stencila-node').convert
+const convert_ = require('stencila-convert').convert
 
 function convert (args, options, logger) {
   let {from, to} = args
