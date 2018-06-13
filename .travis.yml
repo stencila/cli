@@ -19,7 +19,7 @@ after_success:
 before_deploy:
   - tar --transform "s|build/stencila-cli-linux|stencila|" -czvf build/stencila-linux-x64.tar.gz build/stencila-cli-linux
   - tar --transform "s|build/stencila-cli-macos|stencila|" -czvf build/stencila-macos-x64.tar.gz build/stencila-cli-macos
-  - mv build/stencila-cli-win.exe build/stencila.exe ; zip -j build/stencila-win-x64.zip build/stencila-cli.exe
+  - mv build/stencila-cli-win.exe build/stencila.exe ; zip -j build/stencila-win-x64.zip build/stencila.exe
 
 deploy:
   on:
