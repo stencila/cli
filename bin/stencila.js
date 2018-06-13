@@ -5,6 +5,7 @@ const cli = require('caporal')
 const packag = require('../package.json')
 const convert = require('../src/convert')
 const logger = require('../src/logger')
+const setup = require('../src/setup')
 
 cli
   .bin('stencila')
@@ -15,5 +16,8 @@ cli
   .argument('[from]', 'File/folder to convert from', null, '.')
   .argument('[to]', 'File/folder to convert to', null)
   .action(convert)
+
+  .command('setup', 'Setup required software dependencies')
+  .action(setup)
 
 cli.parse(process.argv)
