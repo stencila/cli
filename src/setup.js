@@ -1,13 +1,16 @@
-const setupConvert = require('stencila-convert').setup
+const convert = require('stencila-convert')
 
-async function setup (args, options, logger) {
-  logger.debug(`Setting up`)
-  try {
-    await setupConvert()
-    logger.ok(`Setup suceeded`)
-  } catch (err) {
-    logger.error(`Error with setup": ${err.message}`)
-  }
+module.exports = cli => {
+  cli
+    .command('setup', 'Setup required software dependencies')
+
+    .action(async function setup (args, options, logger) {
+      logger.debug(`Setting up`)
+      try {
+        await convert.setup()
+        logger.ok(`Setup suceeded`)
+      } catch (err) {
+        logger.error(`Error with setup": ${err.message}`)
+      }
+    })
 }
-
-module.exports = setup

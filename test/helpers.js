@@ -1,5 +1,7 @@
 const test = require('tape')
 
+const CLI = require('../src/cli')
+
 /**
  * Test an async function
  *
@@ -14,7 +16,8 @@ function testAsync (name, func) {
     try {
       await func(assert)
     } catch (error) {
-      assert.fail(error.stack)
+      assert.fail(error.message)
+      console.error(error)
       assert.end()
     }
   })
@@ -44,4 +47,19 @@ class TestLogger {
   }
 }
 
-module.exports = { testAsync, TestLogger }
+// Given how caporal works it is necessary to have
+// a single logger, that is reused across tests
+const logger = new TestLogger()
+const cli = CLI(logger)
+
+/**
+ * Primary test function for testing argument parsing etc
+ */
+async function testCLI (args) {
+  // Clear logger messages before running
+  logger.messages = []
+  await cli.parse(['process', 'stencila'].concat(args))
+  return logger
+}
+
+module.exports = { testAsync, testCLI }
