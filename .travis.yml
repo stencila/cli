@@ -17,9 +17,9 @@ after_success:
   - npm run build
 
 before_deploy:
-  - tar --transform "s|build/stencila-linux|stencila|" -czvf build/stencila-linux-x64.tar.gz build/stencila-linux
-  - tar --transform "s|build/stencila-macos|stencila|" -czvf build/stencila-macos-x64.tar.gz build/stencila-macos
-  - mv build/stencila-win.exe build/stencila.exe ; zip -j build/stencila-win-x64.zip build/stencila.exe
+  - tar --transform "s|build/stencila-cli-linux|stencila|" -czvf build/stencila-linux-x64.tar.gz build/stencila-cli-linux
+  - tar --transform "s|build/stencila-cli-macos|stencila|" -czvf build/stencila-macos-x64.tar.gz build/stencila-cli-macos
+  - mv build/stencila-cli-win.exe build/stencila.exe ; zip -j build/stencila-win-x64.zip build/stencila-cli.exe
 
 deploy:
   on:

@@ -3,7 +3,7 @@
   "version": "0.29.1",
   "description": "Stencila CLI (command line interface)",
   "scripts": {
-    "build": "mkdirp build && pkg bin/stencila.js --out-path build -t node8-linux-x64,node8-macos-x64,node8-win-x64",
+    "build": "mkdirp build && pkg package.json --out-path build",
     "lint": "standard",
     "release": "release",
     "test": "tape \"test/**/*.test.js\" | tap-spec",
@@ -40,5 +40,9 @@
     "standard": "^11.0.1",
     "tap-spec": "^5.0.0",
     "tape": "^4.9.1"
+  },
+  "pkg": {
+    "assets": "node_modules/stencila-convert/src/*Template.*",
+    "targets": ["node8-linux-x64","node8-macos-x64","node8-win-x64"]
   }
 }
