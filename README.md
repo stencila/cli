@@ -26,10 +26,10 @@ Or, if you prefer `make`:
 make setup lint test build
 ```
 
-The binaries `stencila-linux`, `stencila-macos` and `stencila-win.exe` in the `build` directory. You can test them out there e.g.
+The binaries `stencila-cli-linux`, `stencila-cli-macos` and `stencila-cli-win.exe` in the `build` directory. You can test them out there e.g.
 
 ```bash
-./build/stencila-linux convert test/fixtures/hello-world.md test/outputs/hello-world.html
+./build/stencila-cli-linux convert test/fixtures/hello-world.md test/outputs/hello-world.html
 ```
 
 The Travis CI build will upload binaries to the releases page. So, if there is no lint and all tests pass, make a release by pushing a tag:

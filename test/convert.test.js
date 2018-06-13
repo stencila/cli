@@ -11,17 +11,17 @@ testAsync('convert', async assert => {
 
   assert.deepEqual(logger.messages, [
     [ 'debug', 'Converting "foo" to "bar"' ],
-    [ 'error', 'Error converting "foo" to "bar": ENOENT: no such file or directory, lstat \'foo\'' ]
+    [ 'error', 'Error converting "foo" to "bar": No converter for path "foo"' ]
   ])
 
   const from = path.join(__dirname, 'fixtures', 'hello-world.md')
-  const to = path.join(__dirname, 'outputs', 'hello-world.html')
+  const to = path.join(__dirname, 'outputs', 'hello-world.jats.xml')
   logger = new TestLogger()
   await convert({from, to}, {}, logger)
 
   assert.deepEqual(logger.messages, [
     [ 'debug', `Converting "${from}" to "${to}"` ],
-    [ 'error', `Error converting "${from}" to "${to}": path must be a string or Buffer` ]
+    [ 'ok', `Success converting "${from}" to "${to}"` ]
   ])
 
   assert.end()
