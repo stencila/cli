@@ -6,17 +6,17 @@ class ConsoleTransport extends winston.Transport {
   log (level, message) {
     switch (level) {
       case 'debug':
-        return console.log(chalk` 🐛  {gray ${message}}`)
+        return console.error(chalk` 🐛  {gray ${message}}`)
       case 'info':
-        return console.info(chalk` 🛈  {blue ${message}}`)
+        return console.error(chalk` 🛈  {blue ${message}}`)
       case 'ok':
-        return console.warn(chalk` ✓  {green ${message}}`)
+        return console.error(chalk` ✓  {green ${message}}`)
       case 'warn':
-        return console.warn(chalk` ⚠  {orange ${message}}`)
+        return console.error(chalk` ⚠  {orange ${message}}`)
       case 'error':
         return console.error(chalk` 💣  {red ${message}}`)
       default:
-        return console.log(chalk` ?  ${level}: ${message}`)
+        return console.error(chalk` ?  ${level}: ${message}`)
     }
   }
 }
