@@ -4,8 +4,8 @@ module.exports = cli => {
   cli
     .command('convert', 'Convert files or folders to other formats')
 
-    .argument('<input>', 'Input file or folder to convert from')
-    .argument('<output>', 'Input file or folder to convert to')
+    .argument('[input]', 'Input file or folder to convert from (or "-" for standard input)', null, '-')
+    .argument('[output]', 'Input file or folder to convert to (or "-" for standard output)', null, '-')
     .option('--from', 'Format to convert from (overrides file name extensions)')
     .option('--to', 'Format to convert to (overrides file name extensions)')
 
