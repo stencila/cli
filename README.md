@@ -9,7 +9,21 @@
 
 ### Install
 
-Download and unzip the binary for the latest [release](https://github.com/stencila/cli/releases).
+Download and unzip the binary for your operating system from the [releases page](https://github.com/stencila/cli/releases).
+
+### Use
+
+Get a list of available commands...
+
+```bash
+stencila --help
+```
+
+Get help on a specific command e.g.
+
+```bash
+stencila convert --help
+```
 
 ### Develop
 
