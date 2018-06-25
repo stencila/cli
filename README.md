@@ -22,13 +22,13 @@ The installation requires two steps:
 Get a list of available commands...
 
 ```bash
-stencila --help
+stencila help
 ```
 
 Get help on a specific command e.g.
 
 ```bash
-stencila convert --help
+stencila help convert
 ```
 
 ### Develop
