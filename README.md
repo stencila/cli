@@ -9,7 +9,13 @@
 
 ### Install
 
-Download and unzip the binary for your operating system from the [releases page](https://github.com/stencila/cli/releases).
+The installation requires two steps:
+1. Download and unpack the binary file with the [CLI for your operating system](https://github.com/stencila/cli/releases).
+2. Copy the binary file to the relevant location in your operating system so that you can easily access the tool in the command line:
+  * on Windows, create a folder in `C:/ProgramFiles/stencila` and copy the `stencila.exe` file into it; then open Windows Command Line and add the folder to the `PATH`: `setx PATH "$env:path;C:/ProgramFiles/stencila"`
+  * on Linux, copy the `stencila` binary file to `/usr/local/bin/`;
+  * on Mac OS X, copy the `stencila` file to the `/Applications` folder.
+
 
 ### Use
 
