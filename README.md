@@ -1,13 +1,12 @@
-## `stencila/cli` : Stencila on the command line
+# ⌨️ CLI 
 
-![Experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
-[![Build status](https://travis-ci.org/stencila/cli.svg?branch=master)](https://travis-ci.org/stencila/cli)
-[![Code coverage](https://codecov.io/gh/stencila/cli/branch/master/graph/badge.svg)](https://codecov.io/gh/stencila/cli)
-[![Dependency status](https://david-dm.org/stencila/convert.svg)](https://david-dm.org/stencila/cli)
-[![Community](https://img.shields.io/badge/join-community-green.svg)](https://community.stenci.la)
-[![Chat](https://badges.gitter.im/stencila/stencila.svg)](https://gitter.im/stencila/stencila)
+**Stencila on the command line**
 
-### Install
+## ⚠️ Deprecated
+
+This project is deprecated and no longer maintained. Please see, our main repository, [`stencila/stencila`](https://github.com/stencila/stencila), for other projects that provide similar or alternative functionality.
+
+## 📦 Install
 
 The installation requires two steps:
 1. Download and unpack the binary file with the [CLI for your operating system](https://github.com/stencila/cli/releases).
@@ -17,7 +16,7 @@ The installation requires two steps:
   * on Mac OS X, copy the `stencila` file to the `/Applications` folder.
 
 
-### Use
+## ⚡ Use
 
 Get a list of available commands...
 
@@ -31,7 +30,7 @@ Get help on a specific command e.g.
 stencila help convert
 ```
 
-### Develop
+## ⚒️ Develop
 
 ```bash
 npm install
